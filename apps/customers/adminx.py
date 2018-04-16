@@ -20,7 +20,7 @@ from django.utils.translation import ugettext as _
 class FormCustomerAdmin(object):
 
     list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', )
-    list_filter = ('company_name', 'create_time', )
+    list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
@@ -142,7 +142,7 @@ xadmin.site.register(SEOCustomer, SEOCustomerAdmin)
 #业支导入资料
 class FormCustomerImportAdmin(object):
     list_display = ('company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', )
-    list_filter = ('company_name', 'create_time', )
+    list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['create_time', 'sem_status', ]
@@ -194,7 +194,7 @@ xadmin.site.register(FormCustomerImport, FormCustomerImportAdmin)
 #最新资料，销售经理可用
 class NewFormCustomerAdmin(object):
     list_display = ('company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', )
-    list_filter = ('company_name', 'create_time', )
+    list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['create_time', ]
