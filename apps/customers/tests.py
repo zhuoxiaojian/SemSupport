@@ -9,11 +9,11 @@ def get_count():
     if os.path.exists(count_path_parent):
         if os.path.exists(count_path):
             f = open(count_path, "r")
-        count = f.read()
-        if count == "" or count is None:
-            count = "0"
-        f.close()
-        pass
+            count = f.read()
+            if count == "" or count is None:
+                count = "0"
+            f.close()
+            pass
     else:
         os.mkdir(count_path_parent)
         f = open(count_path, "w")
