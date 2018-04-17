@@ -6,9 +6,9 @@
 # @Software: PyCharm
 from datetime import timedelta
 from SemSupport.settings import TIME_ZONE
-import djcelery
+# import djcelery
 from celery.schedules import crontab
-djcelery.setup_loader()
+# djcelery.setup_loader()
 #本地
 BROKER_URL = 'redis://:123456@127.0.0.1:6379/1'
 CELERY_RESULT_BAKEND = 'redis://:123456@127.0.0.1:6379/2'
@@ -40,6 +40,6 @@ CELERYBEAT_SCHEDULE={
     'init_work_data': {
         'task': 'customers.tasks.divide_the_work',
         #'schedule': timedelta(seconds=60)
-        'schedule': crontab(minute=u'24', hour=u'9,10,11',),
+        'schedule': crontab(minute=u'40,41,42', hour=u'14',),
     },
 }
