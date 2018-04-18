@@ -40,6 +40,6 @@ CELERYBEAT_SCHEDULE={
     'init_work_data': {
         'task': 'customers.tasks.divide_the_work',
         #'schedule': timedelta(seconds=60)
-        'schedule': crontab(minute=u'40,41,42', hour=u'14',),
+        'schedule': crontab(minute=u'10,20,30', hour=u'17',),
     },
 }
