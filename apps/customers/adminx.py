@@ -230,12 +230,12 @@ xadmin.site.register(NewFormCustomer, NewFormCustomerAdmin)
 
 #成功案例
 class SuccessCustomerAdmin(object):
-    list_display = ('company_name', 'url', 'company_type', 'city', 'address', 'remark', 'create_time', 'update_time')
+    list_display = ('company_name', 'url', 'company_type', 'city', 'create_time', 'update_time')
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
-    exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', ] #不显示列
+    exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', 'remark', 'address', ] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
     model_icon = 'fa fa-handshake-o'
@@ -247,9 +247,6 @@ class SuccessCustomerAdmin(object):
                 Main(
                     Fieldset(_('基本信息'),
                              'company_name', 'company_type', 'url', 'city', 'keyword',
-                             ),
-                    Fieldset(_('联系方式'),
-                              'address',
                              ),
                     Fieldset(_('意向信息'),
                              'sem_status', 'aike_status',
