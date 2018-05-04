@@ -22,8 +22,8 @@ class FormCustomer(models.Model):
     useless_counter = models.IntegerField(verbose_name='无效次数', default=0)
     city = models.CharField(max_length=255, verbose_name='所在城市', null=True, blank=True)
     address = models.TextField(verbose_name='地址', null=True, blank=True)
-    create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now, blank=True)
-    update_time = models.DateTimeField(verbose_name='更新时间', blank=True, null=True, default=datetime.now)
+    create_time = models.DateTimeField(verbose_name='首次发现', default=datetime.now, blank=True)
+    update_time = models.DateTimeField(verbose_name='最后发现', blank=True, null=True, default=datetime.now)
     remark = models.TextField(verbose_name='备注', blank=True, null=True)
     randid = models.BigIntegerField(verbose_name='随机数', default=random.randint(1, MAX_VALUE))
     keyword = models.CharField(max_length=255, verbose_name='搜索关键词', null=True, blank=True)
@@ -116,6 +116,17 @@ class NewFormCustomer(FormCustomer):
 
     class Meta:
         verbose_name = '最新资料'
+        verbose_name_plural = verbose_name
+        proxy = True
+
+    def __str__(self):
+        return self.company_name
+
+
+class SuccessCustomer(FormCustomer):
+
+    class Meta:
+        verbose_name = '成功案例'
         verbose_name_plural = verbose_name
         proxy = True
 

@@ -13,13 +13,13 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from SemSupport.settings import MEDIA_ROOT
 from utils.readExcelUtil import read_excel
-from customers.models import FormCustomerImport, NewFormCustomer
+from customers.models import FormCustomerImport, NewFormCustomer, SuccessCustomer
 from xadmin.layout import Main, Fieldset, Row, Side
 from django.utils.translation import ugettext as _
 #公司信息
 class FormCustomerAdmin(object):
 
-    list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', )
+    list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', 'update_time')
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
@@ -228,3 +228,46 @@ class NewFormCustomerAdmin(object):
 
 xadmin.site.register(NewFormCustomer, NewFormCustomerAdmin)
 
+#成功案例
+class SuccessCustomerAdmin(object):
+    list_display = ('company_name', 'url', 'company_type', 'city', 'address', 'remark', 'create_time', 'update_time')
+    list_filter = ('company_name', 'create_time', 'city', )
+    search_fields = ('company_name', )
+    list_per_page = 20
+    readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
+    exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', ] #不显示列
+    show_bookmarks = False #屏蔽书签
+    list_export = ()#设置不显示导出按钮
+    model_icon = 'fa fa-handshake-o'
+
+    # 修改布局
+    def get_form_layout(self):
+        if self.org_obj:
+            self.form_layout = (
+                Main(
+                    Fieldset(_('基本信息'),
+                             'company_name', 'company_type', 'url', 'city', 'keyword',
+                             ),
+                    Fieldset(_('联系方式'),
+                              'address',
+                             ),
+                    Fieldset(_('意向信息'),
+                             'sem_status', 'aike_status',
+                             ),
+                    Fieldset(_('签单信息'),
+                             'depart', 'sales', 'amount', 'business',
+                             ),
+                    Fieldset(_('时间信息'),
+                             'create_time', 'update_time',
+                             ),
+                ),
+                Side(
+
+                )
+            )
+        return super(SuccessCustomerAdmin, self).get_form_layout()
+
+    def queryset(self):
+        qs = super(SuccessCustomerAdmin, self).queryset()
+        return qs.filter(sem_status=1)
+xadmin.site.register(SuccessCustomer, SuccessCustomerAdmin)
