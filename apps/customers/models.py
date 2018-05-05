@@ -96,7 +96,7 @@ class SEOCustomer(models.Model):
 
 
     class Meta:
-        db_table = 'seo_customer'
+        db_table = 'ys_seo_customer'
         verbose_name = 'seo资料库'
         verbose_name_plural = verbose_name
 
