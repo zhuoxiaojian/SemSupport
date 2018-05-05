@@ -90,7 +90,10 @@ class SEOCustomer(models.Model):
     produce_address = models.TextField(verbose_name='生产经营地址', blank=True, null=True)
     finance_principal = models.CharField(max_length=255, verbose_name='财务负责人姓名', blank=True, null=True)
     finance_principal_mobile = models.CharField(max_length=255, verbose_name='财务负责人移动电话', null=True, blank=True)
-    channel = models.CharField(max_length=255, verbose_name='来源渠道：渠道1是原来的用户信息，渠道2是新导入的用户信息', null=True, blank=True)
+
+    #渠道1是原来的用户信息，渠道2是新导入的用户信息
+    channel = models.CharField(max_length=255, verbose_name='来源渠道', null=True, blank=True)
+
 
     class Meta:
         db_table = 'seo_customer'
