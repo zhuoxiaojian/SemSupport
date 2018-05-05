@@ -14,7 +14,7 @@ class FormCount(models.Model):
 
 
     class Meta:
-        db_table = 'form_count'
+        db_table = 'form_count_details'
         verbose_name = '点击详情'
         verbose_name_plural = verbose_name
         ordering = ['-create_time']
