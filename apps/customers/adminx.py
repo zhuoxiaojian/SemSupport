@@ -12,7 +12,7 @@ import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from SemSupport.settings import MEDIA_ROOT
-from utils.readExcelUtil import read_excel
+from utils.readExcelUtil import read_excel, read_read_excel_seo
 from customers.models import FormCustomerImport, NewFormCustomer, SuccessCustomer
 from xadmin.layout import Main, Fieldset, Row, Side
 from django.utils.translation import ugettext as _
@@ -93,6 +93,7 @@ class SEOCustomerAdmin(object):
     # exclude = ['randid', ] #不显示列
     show_bookmarks = False #屏蔽书签
     model_icon = 'fa fa-folder-o'
+    import_excel = True
     # 修改布局
     def get_form_layout(self):
         if self.org_obj:
@@ -134,6 +135,17 @@ class SEOCustomerAdmin(object):
                 )
             )
         return super(SEOCustomerAdmin, self).get_form_layout()
+
+    def post(self, request, *args, **kwargs):
+        if 'excel' in request.FILES:
+            excelFile = request.FILES.get('excel')
+            excel_name = excelFile.name
+            path = default_storage.save(excel_name, ContentFile(excelFile.read()))
+            tmp_file = os.path.join(MEDIA_ROOT, path)
+            read_read_excel_seo.delay(tmp_file, excel_name)
+        return super(SEOCustomerAdmin, self).post(request, args, kwargs)
+
+
 xadmin.site.register(SEOCustomer, SEOCustomerAdmin)
 
 
