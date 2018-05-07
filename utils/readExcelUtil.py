@@ -163,6 +163,7 @@ def read_read_excel_seo(excel_path, excel_real_name):
                 finance_principal = None
                 finance_principal_mobile = None
                 rand_id = random.randint(1, MAX_VALUE)
+                channel = "渠道2"
                 aike_status = 0
                 seo_status = 0
                 level = 0
@@ -215,6 +216,7 @@ def read_read_excel_seo(excel_path, excel_real_name):
                             f_old.aike_status = aike_status
                             f_old.seo_status = seo_status
                             f_old.update_date = datetime.datetime.now()
+                            f_old.channel = channel
                             f_old.save()
                         else:
                             SEOCustomer.objects.create(company_name=company_name, aike_status=aike_status,
@@ -227,6 +229,7 @@ def read_read_excel_seo(excel_path, excel_real_name):
                                                        rand_id=rand_id,
                                                        level=level,
                                                        create_date=datetime.datetime.now(),
-                                                       update_date=None)
+                                                       update_date=None,
+                                                       channel=channel)
         os.remove(excel_path)
         print("===================SEO资料导入完成======================")
