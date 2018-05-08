@@ -12,15 +12,15 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='FormRegionCity',
+            name='Channel',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, unique=True, verbose_name='城市')),
+                ('name', models.CharField(max_length=255, unique=True, verbose_name='渠道来源')),
             ],
             options={
-                'verbose_name': '城市信息',
-                'verbose_name_plural': '城市信息',
-                'db_table': 'ys_city',
+                'verbose_name': '渠道信息',
+                'verbose_name_plural': '渠道信息',
+                'db_table': 'ys_channel',
             },
         ),
     ]
