@@ -27,9 +27,15 @@ def count_by_sale():
     if total_list:
         for total in total_list:
             sale = total.get('sales')
-            total_amount = total.get('total_amount')
-            total_business = total.get('total_business')
-            total_amountNum = total.get('total_amountNum')
+            total_amount = 0
+            if not total.get('total_amount') is None:
+                total_amount = total.get('total_amount')
+            total_business = 0
+            if not total.get('total_business') is None:
+                total_business = total.get('total_business')
+            total_amountNum = 0
+            if not total.get('total_amountNum') is None:
+                total_amountNum = total.get('total_amountNum')
             CBS = CountBySale.objects.filter(create_time__year=year,
                                              create_time__month=month,
                                              create_time__day=day,
@@ -64,9 +70,15 @@ def count_by_depart():
     if total_list:
         for total in total_list:
             depart = total.get('depart')
-            total_amount = total.get('total_amount')
-            total_business = total.get('total_business')
-            total_amountNum = total.get('total_amountNum')
+            total_amount = 0
+            if not total.get('total_amount') is None:
+                total_amount = total.get('total_amount')
+            total_business = 0
+            if not total.get('total_business') is None:
+                total_business = total.get('total_business')
+            total_amountNum = 0
+            if not total.get('total_amountNum') is None:
+                total_amountNum = total.get('total_amountNum')
             CBS = CountByDepart.objects.filter(create_time__year=year,
                                              create_time__month=month,
                                              create_time__day=day,
