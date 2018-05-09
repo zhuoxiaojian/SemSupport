@@ -135,3 +135,14 @@ class SuccessCustomer(FormCustomer):
 
     def __str__(self):
         return self.company_name
+
+class SeoSaleWork(SEOCustomer):
+
+    class Meta:
+        verbose_name = 'SEO任务库'
+        verbose_name_plural = verbose_name
+        proxy = True
+
+    def __str__(self):
+        return self.company_name
+

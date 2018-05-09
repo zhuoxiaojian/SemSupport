@@ -7,13 +7,13 @@
 import xadmin
 from customers.models import FormCustomer, SEOCustomer
 from utils.getNeedDatas import get_real_data
-from utils.getNeedDatas import get_sale_manager_id, get_saleManager_data, get_new_customer_data_to_admin
+from utils.getNeedDatas import get_sale_manager_id, get_saleManager_data, get_new_customer_data_to_admin, get_seo_sale_work, get_seo_sale_id
 import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from SemSupport.settings import MEDIA_ROOT
 from utils.readExcelUtil import read_excel, read_read_excel_seo
-from customers.models import FormCustomerImport, NewFormCustomer, SuccessCustomer
+from customers.models import FormCustomerImport, NewFormCustomer, SuccessCustomer, SeoSaleWork
 from xadmin.layout import Main, Fieldset, Row, Side
 from django.utils.translation import ugettext as _
 #公司信息
@@ -85,8 +85,8 @@ xadmin.site.register(FormCustomer, FormCustomerAdmin)
 
 #seo公司信息
 class SEOCustomerAdmin(object):
-    list_display = ('company_name', 'company_type', 'link_man', 'tel_phone', 'mobile_phone', 'address', 'aike_status', 'seo_status', 'create_date', )
-    list_filter = ('company_name', 'create_date', )
+    list_display = ('company_name', 'company_type', 'link_man', 'tel_phone', 'mobile_phone', 'address', 'aike_status', 'seo_status', 'prefecture_level_city', 'create_date', )
+    list_filter = ('company_name', 'create_date', 'prefecture_level_city', )
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['rand_id', 'channel', 'level']
@@ -280,3 +280,63 @@ class SuccessCustomerAdmin(object):
         qs = super(SuccessCustomerAdmin, self).queryset()
         return qs.filter(sem_status=1)
 xadmin.site.register(SuccessCustomer, SuccessCustomerAdmin)
+
+
+class SeoSaleWorkAdmin(object):
+    list_display = ('company_name', 'company_type', 'link_man', 'tel_phone', 'mobile_phone', 'address', 'aike_status', 'seo_status', 'prefecture_level_city', 'create_date', )
+    list_filter = ('company_name', 'create_date', 'prefecture_level_city', )
+    search_fields = ('company_name', )
+    list_per_page = 20
+    exclude = ['rand_id', 'channel', 'level', ] #不显示列
+    show_bookmarks = False #屏蔽书签
+    list_export = ()#设置不显示导出按钮
+    model_icon = 'fa fa-star-half-o'
+    # 修改布局
+    def get_form_layout(self):
+        if self.org_obj:
+            self.form_layout = (
+                Main(
+                    Fieldset(_('基本信息'),
+                             'company_name', 'company_type', 'url', 'legal_man', 'issue_date', 'registration_authority',
+                             ),
+                    Fieldset(_('联系人物'),
+                             'link_man', 'sex', 'job', 'is_boss', 'isboss_mobile',
+                             ),
+                    Fieldset(_('联系方式'),
+                             'tel_phone', 'mobile_phone', 'mobile_phone_address', 'mobile_carrieroperator', 'zip_code'
+                             ),
+                    Fieldset(_('主要经营'),
+                             'scope_business', 'business_position', 'produce_address',
+                             ),
+                    Fieldset(_('地址详情'),
+                             'province', 'prefecture_level_city', 'county_district', 'address',
+                             ),
+                    Fieldset(_('注册日期'),
+                             'register_year', 'register_month', 'register_date',
+                             ),
+                    Fieldset(_('财务信息'),
+                             'finance_principal', 'finance_principal_mobile',
+                             ),
+                    Fieldset(_('意向信息'),
+                             'seo_status', 'aike_status',
+                             ),
+                    Fieldset(_('时间信息'),
+                             'create_date', 'update_date',
+                             ),
+                ),
+                Side(
+
+                )
+            )
+        return super(SeoSaleWorkAdmin, self).get_form_layout()
+
+    def queryset(self):
+        qs = super(SeoSaleWorkAdmin, self).queryset()
+        user_id = self.user.id
+        seo_sale_id = get_seo_sale_id()
+        if user_id in seo_sale_id:
+            rand_id_list = get_seo_sale_work(self.user.id)
+            return qs.filter(rand_id__in=rand_id_list)
+        else:
+            return qs
+xadmin.site.register(SeoSaleWork, SeoSaleWorkAdmin)

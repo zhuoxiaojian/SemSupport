@@ -5,15 +5,16 @@
 # @File    : tasks.py
 # @Software: PyCharm
 from celery import task
-from utils.getNeedDatas import get_sale
+from utils.getNeedDatas import get_sale, get_seo_sale
 from citys.models import FormRegionCity
-from  customers.models import FormCustomer
-from django.db.models import Q
+from customers.models import FormCustomer, SEOCustomer
+from django.db.models import Q, F
 from utils.DateFormatUtil import get_today,get_before_oneweek
 from utils.getNeedDatas import get_count,write_count
 from works.models import customerUser
 import time
 SalecountNum = 250
+SEOInfoNum = 250
 
 @task
 def divide_the_work():
@@ -62,6 +63,40 @@ def divide_the_work():
     write_count(str(count+1))
     print("==================================任务分配完毕===================================")
 
+
+
+#定时更新已分配的SEO资料的level（轮换数）
+@task
+def update_seo_level():
+    #ORDER BY  level asc,create_date desc,rand_id desc limit 250
+    print("============================开始更新level标签================================")
+    seo_sale = get_seo_sale()
+
+    #根据城市分配
+    frcDatas = FormRegionCity.objects.all()
+    if frcDatas.exists():
+        for city in frcDatas:
+            if seo_sale.exists():
+                for seo in seo_sale:
+                    seo_sale_id = []
+                    if(seo.city==city):
+                        seo_sale_id.append(seo.id)
+                    if len(seo_sale_id) > 0:
+                        num = len(seo_sale_id)
+                        limitNum = num * SEOInfoNum
+                        update_city = city.name
+                        q = SEOCustomer.objects.filter(Q(seo_status=0), Q(aike_status=0),
+                                                       prefecture_level_city__icontains=update_city).order_by('level',
+                                                                                                   '-create_date',
+                                                                                                   '-rand_id'
+                                                                                                   )[0:limitNum]
+                        # print(q.query)
+                        if q.exists():
+                            for qs in q:
+                                u_l = SEOCustomer.objects.get(id=qs.id)
+                                u_l.level = u_l.level + 1
+                                u_l.save()
+    print("============================更新level标签结束================================")
 
 
 

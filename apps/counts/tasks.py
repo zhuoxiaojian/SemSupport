@@ -7,7 +7,7 @@
 from celery import task
 from counts.models import FormCountTotal
 from django.db import connection
-from utils.DateFormatUtil import get_yesterday,get_today
+from utils.DateFormatUtil import get_yesterday, get_today
 from counts.models import FormCount
 from counts.models import FormCountTotal
 from users.models import UserProfile

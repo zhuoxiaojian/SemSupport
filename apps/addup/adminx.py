@@ -4,7 +4,7 @@
 # @Email   : 1933860854@qq.com
 # @File    : adminx.py
 # @Software: PyCharm
-from addup.models import addUpByDepart
+from addup.models import addUpByDepart, CountBySale, CountByDepart
 from utils.getNeedDatas import get_addup_depart
 import xadmin
 from django.db.models import Q
@@ -64,3 +64,41 @@ class addUpByDepartAdmin(object):
         return qs.filter(Q(depart__isnull=False), ~Q(depart=''), ~Q(depart='空'))
 
 xadmin.site.register(addUpByDepart, addUpByDepartAdmin)
+
+class CountBySaleAdmin(object):
+    list_display = ('sale', 'total_amount',  'total_business', 'total_amountNum', 'create_time', )
+    list_filter = ('sale', 'create_time', )
+    search_fields = ('sale', )
+    show_bookmarks = False #屏蔽书签
+    list_export = ()#设置不显示导出按钮
+    model_icon = 'fa fa-list'
+    aggregate_fields = {'total_amount': 'sum', 'total_business': 'sum', 'total_amountNum': 'sum'}
+    #屏蔽添加按钮
+    def has_add_permission(self):
+        return False
+
+    def has_delete_permission(request, obj=None):
+        return False
+
+    def has_change_permission(request, obj=None):
+        return False
+xadmin.site.register(CountBySale, CountBySaleAdmin)
+
+class CountByDepartAdmin(object):
+    list_display = ('depart', 'total_amount',  'total_business', 'total_amountNum', 'create_time', )
+    list_filter = ('depart', 'create_time', )
+    search_fields = ('depart', )
+    show_bookmarks = False #屏蔽书签
+    list_export = ()#设置不显示导出按钮
+    model_icon = 'fa fa-list-ul'
+    aggregate_fields = {'total_amount': 'sum', 'total_business': 'sum', 'total_amountNum': 'sum'}
+    #屏蔽添加按钮
+    def has_add_permission(self):
+        return False
+
+    def has_delete_permission(request, obj=None):
+        return False
+
+    def has_change_permission(request, obj=None):
+        return False
+xadmin.site.register(CountByDepart, CountByDepartAdmin)

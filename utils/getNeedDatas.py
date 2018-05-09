@@ -5,13 +5,16 @@
 # @File    : getAllSaleUser.py
 # @Software: PyCharm
 from django.contrib.auth.models import Group
-from customers.models import FormCustomer
+from customers.models import FormCustomer, SEOCustomer
 from django.db.models import Q
-from utils.DateFormatUtil import get_before_oneweek,get_today
+from utils.DateFormatUtil import get_before_oneweek, get_today
 from works.models import customerUser
+from citys.models import FormRegionCity
+from users.models import UserProfile
 import os
 from django.db.models import Count, Min, Max, Sum
-
+seo_info_num = 250
+sem_info_num = 250
 #获取所有销售人员
 def get_sale():
     gp = Group.objects.filter(name='销售人员')
@@ -33,7 +36,7 @@ def get_real_data(user_id, city_name):
     randid_list = []
     if user_work.exists():
         q_randid = user_work[0].customer_id
-        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid), Q(city=city_name) | Q(city__isnull=True), Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True), sem_status=0, aike_status=0).order_by('randid')[0:250]
+        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid), Q(city=city_name) | Q(city__isnull=True), Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True), sem_status=0, aike_status=0).order_by('randid')[0:sem_info_num]
         # print(q_randid_list_data.query)
         if q_randid_list_data.exists():
             for qd in q_randid_list_data:
@@ -183,6 +186,89 @@ def get_addup_depart():
             print(tl['depart'])
         return total_list
     return None
+
+#获取所有的SEO销售人员
+def get_seo_sale():
+    gp = Group.objects.filter(name='SEO销售人员')
+    if gp.exists():
+        print("=============SEO销售人员角色组存在==================")
+    else:
+        Group.objects.create(name='SEO销售人员')
+
+    group = Group.objects.get(name='SEO销售人员')
+    seo_users = group.user_set.all()
+    return seo_users
+
+#获取所有的SEO销售人员的id
+def get_seo_sale_id():
+    seo_sale_id = []
+    gp = Group.objects.filter(name='SEO销售人员')
+    if gp.exists():
+        print("=============SEO销售人员角色组存在==================")
+    else:
+        Group.objects.create(name='SEO销售人员')
+
+    group = Group.objects.get(name='SEO销售人员')
+    if not group is None:
+        seo_users = group.user_set.all()
+        if seo_users.exists():
+            for u in seo_users:
+                seo_sale_id.append(u.id)
+    return seo_sale_id
+
+
+#分配SEO销售人员对应的资料
+def divide_seo_slae_work():
+    dict = {}
+    seo_sales = get_seo_sale()
+    citys = FormRegionCity.objects.all()
+    if citys.exists():
+        for city in citys:
+            seo_sale_id = []
+            if seo_sales.exists():
+                for seo_sale in seo_sales:
+                    if seo_sale.city.name == city.name:
+                        seo_sale_id.append(seo_sale.id)
+            if len(seo_sale_id) > 0:
+                result_list = []
+                num = len(seo_sale_id)
+                limitNum = num * seo_info_num
+                seo_datas = SEOCustomer.objects.filter(Q(seo_status=0), Q(aike_status=0),
+                    prefecture_level_city__icontains=city.name).values('rand_id').\
+                                                                                order_by('level',
+                                                                                '-create_date',
+                                                                                '-rand_id'
+                                                                                )[0:limitNum]
+                if seo_datas.exists():
+                    seo_data_list = []
+                    for seo_data in seo_datas:
+                        seo_data_list.append(seo_data)
+                    result_list = averageAssing(seo_data_list, num)
+                if len(result_list) > 0:
+                    count = 0
+                    for id in seo_sale_id:
+                        user = UserProfile.objects.get(id=id)
+                        if not user is None:
+                            dict[str(id)+user.username] = result_list[count]
+                            count = count + 1
+    return dict
+
+#获取SEO销售人员对应的资料
+def get_seo_sale_work(userId):
+    rand_id_list = []
+    user = UserProfile.objects.get(id=userId)
+    dict = divide_seo_slae_work()
+    if not user is None:
+        key = str(userId)+user.username
+        if dict:
+            rand_id = dict.get(key)
+            for rand in rand_id:
+                rand_id_list.append(rand.get('rand_id'))
+    return rand_id_list
+
+
+
+
 
 
 

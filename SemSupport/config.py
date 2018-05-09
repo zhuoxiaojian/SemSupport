@@ -42,4 +42,20 @@ CELERYBEAT_SCHEDULE={
         #'schedule': timedelta(seconds=60)
         'schedule': crontab(minute=u'10,20,30', hour=u'17',),
     },
+    'update_seo_level': {
+        'task': 'customers.tasks.update_seo_level',
+        'schedule': crontab(minute=u'55', hour=u'17', ),
+    },
+    'count_by_sale': {
+        'task': 'addup.tasks.count_by_sale',
+        'schedule': timedelta(seconds=5*60)
+    },
+    'count_by_depart': {
+        'task': 'addup.tasks.count_by_depart',
+        'schedule': timedelta(seconds=5*60)
+    },
+    'update_form_customer_depart': {
+        'task': 'addup.tasks.update_form_customer_depart',
+        'schedule': timedelta(seconds=30*60)
+    }
 }
