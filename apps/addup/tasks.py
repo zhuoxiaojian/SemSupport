@@ -87,10 +87,10 @@ def count_by_depart():
                 pass
             else:
                 CountByDepart.objects.create(depart=depart,
-                                           total_amount=total_amount,
-                                           total_business=total_business,
-                                           total_amountNum=total_amountNum,
-                                           create_time=datetime.datetime.now())
+                                             total_amount=total_amount,
+                                             total_business=total_business,
+                                             total_amountNum=total_amountNum,
+                                             create_time=datetime.datetime.now())
 
 @task
 def update_form_customer_depart():
