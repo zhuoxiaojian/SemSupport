@@ -36,10 +36,7 @@ def count_by_sale():
             total_amountNum = 0
             if not total.get('total_amountNum') is None:
                 total_amountNum = total.get('total_amountNum')
-            CBS = CountBySale.objects.filter(create_time__year=year,
-                                             create_time__month=month,
-                                             create_time__day=day,
-                                             sale=sale)
+            CBS = CountBySale.objects.filter(sale=sale)
             if CBS.exists():
                 c_s = CountBySale.objects.get(id=CBS[0].id)
                 c_s.total_amountNum = total_amountNum
@@ -79,10 +76,7 @@ def count_by_depart():
             total_amountNum = 0
             if not total.get('total_amountNum') is None:
                 total_amountNum = total.get('total_amountNum')
-            CBS = CountByDepart.objects.filter(create_time__year=year,
-                                             create_time__month=month,
-                                             create_time__day=day,
-                                             depart=depart)
+            CBS = CountByDepart.objects.filter(depart=depart)
             if CBS.exists():
                 c_s = CountByDepart.objects.get(id=CBS[0].id)
                 c_s.total_amountNum = total_amountNum
