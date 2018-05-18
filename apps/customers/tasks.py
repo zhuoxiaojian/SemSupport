@@ -13,6 +13,7 @@ from utils.DateFormatUtil import get_today,get_before_oneweek
 from utils.getNeedDatas import get_count,write_count
 from works.models import customerUser
 import time
+import datetime
 SalecountNum = 250
 SEOInfoNum = 250
 
@@ -95,6 +96,7 @@ def update_seo_level():
                             for qs in q:
                                 u_l = SEOCustomer.objects.get(id=qs.id)
                                 u_l.level = u_l.level + 1
+                                u_l.update_date = datetime.datetime.now()
                                 u_l.save()
     print("============================更新level标签结束================================")
 
