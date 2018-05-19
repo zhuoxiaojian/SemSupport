@@ -10,6 +10,6 @@ class ConstantsAdmin(object):
     list_display = ('key', 'value', 'remark', )
     list_filter = ('key', )
     search_fields = ('key',)
-    model_icon = 'fa fa-sun-o'  # 修改图标
+    model_icon = 'fa fa-align-center'  # 修改图标
     show_bookmarks = False  # 屏蔽书签
 xadmin.site.register(Constants, ConstantsAdmin)
