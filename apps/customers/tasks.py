@@ -14,12 +14,18 @@ from utils.getNeedDatas import get_count,write_count
 from works.models import customerUser
 import time
 import datetime
-SalecountNum = 250
-SEOInfoNum = 250
+from utils.getConstantsUtil import getConstantsVale
+# SalecountNum = 250
+# SEOInfoNum = 250
 
 @task
 def divide_the_work():
+
     print("==================================开始分配任务===================================")
+    SalecountNum_str = getConstantsVale('smsNum')
+    if SalecountNum_str is None:
+        SalecountNum_str = 250
+    SalecountNum = int(SalecountNum_str)
     date_from = '2017-01-01 00:00:00'
     date_to = get_before_oneweek()
     saleUser = get_sale()
@@ -71,6 +77,11 @@ def divide_the_work():
 def update_seo_level():
     #ORDER BY  level asc,create_date desc,rand_id desc limit 250
     print("============================开始更新level标签================================")
+    SEOInfoNum_str = getConstantsVale('seoNum')
+    if SEOInfoNum_str is None:
+        SEOInfoNum_str = str(250)
+    SEOInfoNum = int(SEOInfoNum_str)
+
     seo_sale = get_seo_sale()
 
     #根据城市分配

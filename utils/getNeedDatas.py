@@ -11,10 +11,11 @@ from utils.DateFormatUtil import get_before_oneweek, get_today
 from works.models import customerUser
 from citys.models import FormRegionCity
 from users.models import UserProfile
+from utils.getConstantsUtil import getConstantsVale
 import os
 from django.db.models import Count, Min, Max, Sum
-seo_info_num = 250
-sem_info_num = 250
+# seo_info_num = 250
+# sem_info_num = 250
 #获取所有销售人员
 def get_sale():
     gp = Group.objects.filter(name='销售人员')
@@ -29,6 +30,10 @@ def get_sale():
 
 #获取销售对应的资料
 def get_real_data(user_id, city_name):
+    sem_info_num_str = getConstantsVale('smsNum')
+    if sem_info_num_str is None:
+        sem_info_num_str = str(250)
+    sem_info_num = int(sem_info_num_str)
     date_from = '2017-01-01 00:00:00'
     date_to = get_before_oneweek()
     now_time = str(get_today())
@@ -219,6 +224,10 @@ def get_seo_sale_id():
 
 #分配SEO销售人员对应的资料
 def divide_seo_slae_work():
+    seo_info_num_str = getConstantsVale('seoNum')
+    if seo_info_num_str is None:
+        seo_info_num_str = str(250)
+    seo_info_num = int(seo_info_num_str)
     dict = {}
     seo_sales = get_seo_sale()
     citys = FormRegionCity.objects.all()

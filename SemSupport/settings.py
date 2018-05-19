@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     'citys',
     'works',
     'addup',
-    'channel'
+    'channel',
+    'constants'
 ]
 
 MIDDLEWARE = [
