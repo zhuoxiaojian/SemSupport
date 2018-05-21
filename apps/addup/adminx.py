@@ -72,6 +72,7 @@ class CountBySaleAdmin(object):
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
     model_icon = 'fa fa-list'
+    ordering = ('-create_time', )
     aggregate_fields = {'total_amount': 'sum', 'total_business': 'sum', 'total_amountNum': 'sum'}
     #屏蔽添加按钮
     def has_add_permission(self):
@@ -88,6 +89,7 @@ class CountByDepartAdmin(object):
     list_display = ('depart', 'total_amount',  'total_business', 'total_amountNum', 'create_time', )
     list_filter = ('depart', 'create_time', )
     search_fields = ('depart', )
+    ordering = ('-create_time', )
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
     model_icon = 'fa fa-list-ul'
