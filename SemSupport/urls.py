@@ -26,15 +26,16 @@ from django.views.static import serve
 
 urlpatterns = [
     url('^admin/', xadmin.site.urls),
-    url('^$', RedirectView.as_view(url = '/admin'), name = 'login'),
+    url('^$', RedirectView.as_view(url='/admin'), name='login'),
     # path('refleshAdData/', xadmin.site.urls),
-    url('^login/', RedirectView.as_view(url = '/admin'), name = 'login'),
+    url('^login/', RedirectView.as_view(url='/admin'), name='login'),
     # 处理图片显示的url,使用Django自带serve,传入参数告诉它去哪个路径找，我们有配置好的路径MEDIAROOT
     # re_path('media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT }),
     # url('^captcha/', include('captcha.urls')),
     # 配置静态文件访问
     # url('(?P<path>.*)$', serve, {'document_root': STATICFILES_DIRS}),
     url('^admin/customers/formcustomer/formCustomerHandle', formCustomerHandle.as_view(), name='formCustomerHandle'),
+    url(r'^favicon.ico$', RedirectView.as_view(url=r'static/favicon.ico')),
 ]
 
 # 全局 404 500 页面配置（django 会自动调用这个变量）

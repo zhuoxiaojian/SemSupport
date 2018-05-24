@@ -126,6 +126,17 @@ DATABASES = {
 #     }
 # }
 
+#正式服
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'SemSupport',
+#         'HOST': 'app.db.mid.nisure.xyz',
+#         'PORT': 3307,
+#         'USER': 'semsupport',
+#         'PASSWORD': '7up3IawctTczbpoz'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
