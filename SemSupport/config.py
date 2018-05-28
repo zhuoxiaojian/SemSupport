@@ -30,7 +30,7 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERYBEAT_SCHEDULE={
     'init_hit_data': {
         'task': 'counts.tasks.initData',  # tasks.py模块下的getCamp方法
-        'schedule': timedelta(seconds=2*60),      # 每隔1分钟运行一次
+        'schedule': timedelta(seconds=5*60),      # 每隔1分钟运行一次
         # 'args': (23, 12),
     },
     'update_name_depart': {
