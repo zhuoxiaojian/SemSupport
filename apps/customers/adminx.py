@@ -23,7 +23,7 @@ class FormCustomerAdmin(object):
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
-    readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
+    readonly_fields = ['company_name', 'create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
     exclude = ['randid', 'useless_counter', ] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
