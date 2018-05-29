@@ -14,7 +14,7 @@ from users.models import UserProfile
 class CustomBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         try:
-            user = UserProfile.objects.get(Q(username = username))
+            user = UserProfile.objects.get(Q(username=username))
             if user.check_password(password):
                 return user
         except Exception as e:

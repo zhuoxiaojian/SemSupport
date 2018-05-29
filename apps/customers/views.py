@@ -16,7 +16,11 @@ class formCustomerHandle(View):
         formatToday = date_string()
         user = request.user
         user_id = request.user.id
-        real_name = request.user.last_name+request.user.first_name
+        real_name = ""
+        if not user_id is None:
+            user = UserProfile.objects.get(id=user_id)
+            if not user is None:
+                real_name = user.last_name+user.first_name
         depart = None
         if not UserProfile.objects.get(id=user_id).depart is None:
             depart = UserProfile.objects.get(id=user_id).depart
