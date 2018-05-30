@@ -19,7 +19,7 @@ class customerUser(models.Model):
     def change_user_id(self):
         up = UserProfile.objects.get(id=self.user_id)
         if up:
-            return up.last_name+up.first_name
+            return up.username
         else:
             return None
     change_user_id.short_description = '对应销售'
