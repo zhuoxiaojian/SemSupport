@@ -16,14 +16,15 @@ class formCustomerHandle(View):
         formatToday = date_string()
         user = request.user
         user_id = request.user.id
-        real_name = ""
+        real_name = None
+        depart = None
         if not user_id is None:
             user = UserProfile.objects.get(id=user_id)
             if not user is None:
                 real_name = user.last_name+user.first_name
-        depart = None
-        if not UserProfile.objects.get(id=user_id).depart is None:
-            depart = UserProfile.objects.get(id=user_id).depart
+            if not user.depart is None:
+                depart = user.depart
+
         url = request.GET.get('url')
         action = request.GET.get('action')
         if action == 'handleUrl':
