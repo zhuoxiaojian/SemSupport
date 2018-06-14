@@ -62,7 +62,8 @@ INSTALLED_APPS = [
     'works',
     'addup',
     'channel',
-    'constants'
+    'constants',
+    'speechcraft'
 ]
 
 MIDDLEWARE = [

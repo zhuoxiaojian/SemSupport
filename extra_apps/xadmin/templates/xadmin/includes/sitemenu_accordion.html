@@ -21,10 +21,17 @@
     </div>
     <div id="nav-panel-{{forloop.counter}}" class="list-group panel-collapse collapse{% if item.selected %} in{% endif %}">
       {% for sitem in item.menus %}
-      <a href="{{ sitem.url|default_if_none:'#' }}" class="list-group-item{% if sitem.selected %} active{% endif %}">
-        {% if sitem.icon %}<i class="fa-fw {{sitem.icon}}"></i>{%else%}<i class="fa-fw fa fa-circle-o"></i>{% endif %}
-        {{ sitem.title }}</span>
-      </a>
+          {% if sitem.url == '/admin/speechcraft/speechcraftshow/' %}
+              <a href="/admin/speechcraftshow/" target="_blank" class="list-group-item{% if sitem.selected %} active{% endif %}">
+                  {% if sitem.icon %}<i class="fa-fw {{sitem.icon}}"></i>{%else%}<i class="fa-fw fa fa-circle-o"></i>{% endif %}
+                  {{ sitem.title }}</span>
+              </a>
+          {% else %}
+              <a href="{{ sitem.url|default_if_none:'#' }}" class="list-group-item{% if sitem.selected %} active{% endif %}">
+                {% if sitem.icon %}<i class="fa-fw {{sitem.icon}}"></i>{%else%}<i class="fa-fw fa fa-circle-o"></i>{% endif %}
+                {{ sitem.title }}</span>
+              </a>
+          {% endif %}
       {% endfor %}
     </div>
   </div>

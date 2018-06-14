@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>话术查看 | 易数宝智能营销支撑系统</title>
+    <script src="../../static/js/jquery.min.js"></script>
+    <script src="../../static/js/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../../static/css/speechcraftshow.css">
+</head>
+<script type="text/javascript">
+    $(function(){
+        var csrftoken = $.cookie("csrftoken");
+        if(csrftoken==undefined || csrftoken==null){
+            alert('请先登录');
+            return;
+        }
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": csrftoken }
+        });
+        var CHECK_LOGIN = "{% url 'checkLoginInfo' %}";
+        $.ajax({
+            url: CHECK_LOGIN,
+            type: 'GET',
+            dataType: 'json',
+            success:function (result) {
+                {#alert(result.message);#}
+                if("fail" == result.message){
+                    alert("请先登录!");
+                    return;
+                }
+            }
+        });
+
+    });
+
+</script>
+<body>
+<div class="wrap">
+    <div class="wrap_top">
+        <img src="../../static/nisure/images/top_logo.png">
+    </div>
+    <div class="wrap-middle">
+        <ul class="wrap_ul" id="wrap_ul">
+            <li class="wrap_li back">开场白</li>
+            <li class="wrap_li">激发兴趣</li>
+            <li class="wrap_li">挖掘需求</li>
+            <li class="wrap_li">导入产品 </li>
+            <li class="wrap_li border-none">邀约见面 </li>
+        </ul>
+        <div class="search">
+            <input type="text" name="searchType" value="" id="inputSearchType" placeholder="  输入关键字">
+            <img src="../../static/nisure/images/magnifying.png" class="magnifying" id="imageClick">
+        </div>
+        <div class="list-connet">
+            <div class="show-border none dis show" id="index1">
+{#                <div class="show-list">#}
+{#                    <div class="show-title">标题:<span class="span-indent">asasdasd</span></div>#}
+{#                    <div class="show-thinking">思路:<span class="span-indent">asdasdasf</span></div>#}
+{#                    <div class="show-content">内容:<span class="span-indent">sdfadsf</span></div>#}
+{#                    <div class="show-type">类型:<span class="span-indent">dsafsdafasdf</span></div>#}
+{#                </div>#}
+
+            </div>
+            <div class="show-border none show" id="index2"></div>
+            <div class="show-border none show" id="index3"></div>
+            <div class="show-border none show" id="index4"></div>
+            <div class="show-border none show" id="index5"></div>
+        </div>
+
+    </div>
+
+    <input id="show_per_page" type="text" hidden/>
+    <input id="current_page" type="text"  hidden/>
+
+    <div id="page_navigation" class="page_navigation"></div>
+
+    <div style="position: absolute;bottom: 10px;left: 50%;">
+        <p>&copy; 易数宝智能营销支撑系统</p>
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript">
+
+    var limitNum = 5;
+    var GoalSearch;
+    var handleMethod;
+    function tab(trigger){
+        $(trigger).click(function() {
+
+            $(this).addClass('back').siblings("li").removeClass('back');
+            $(this).parent().parent().find(".list-connet").find(".show-border").eq($(this).index()).show().siblings().hide();
+            var search = $(this).text();
+            GoalSearch = ""
+            GoalSearch = search.replace(' ', '');
+            $('#page_navigation').empty();
+            handleMethod = 'formal';
+            var inputSearch = $("#inputSearchType").val();
+            sendInitGetRequest(inputSearch, GoalSearch, 0, limitNum, handleMethod);
+
+        });
+    }
+    $(function(){
+
+        tab(".wrap_li");
+
+    })
+
+    function appendInfo(dataInfo) {
+       var strInfo = "";
+       if(dataInfo.length >0){
+           for(var i=0; i<dataInfo.length; i++){
+               strInfo = strInfo + "<div class=\"show-list\">";
+               if("" != dataInfo[i].speechTitle && null != dataInfo[i].speechTitle){
+                   strInfo = strInfo + "<div class=\"show-title\">标&nbsp;&nbsp;&nbsp;&nbsp;题：<span class=\"span-indent\">"+dataInfo[i].speechTitle +
+                       "</span></div>";
+               }
+               if("" != dataInfo[i].speechKeyword && null != dataInfo[i].speechKeyword){
+                   strInfo = strInfo + "<div class=\"show-keyword\">关键词：<span class=\"span-indent\">"+dataInfo[i].speechKeyword+
+                            "</span></div>";
+               }
+               if("" != dataInfo[i].speechGoal && null != dataInfo[i].speechGoal){
+                   strInfo = strInfo + "<div class=\"show-goal\">目&nbsp;&nbsp;&nbsp;&nbsp;的：<span class=\"span-indent\">"+dataInfo[i].speechGoal+
+                       "</span></div>";
+               }
+               if("" != dataInfo[i].speechQuestion && null != dataInfo[i].speechQuestion){
+                   strInfo = strInfo + "<div class=\"show-question\">问&nbsp;&nbsp;&nbsp;&nbsp;题：<span class=\"span-indent\">"+dataInfo[i].speechQuestion+
+                       "</span></div>";
+               }
+               if("" != dataInfo[i].speechFlow && null != dataInfo[i].speechFlow){
+                   strInfo = strInfo + "<div class=\"show-flow\">流&nbsp;&nbsp;&nbsp;&nbsp;程：<span class=\"span-indent\">"+dataInfo[i].speechFlow+
+                       "</span></div>";
+               }
+               if("" != dataInfo[i].speechAnswer && null != dataInfo[i].speechAnswer){
+                   strInfo = strInfo + "<div class=\"show-answer\">回&nbsp;&nbsp;&nbsp;&nbsp;答：<span class=\"span-indent\">"+dataInfo[i].speechAnswer+
+                       "</span></div>";
+               }
+               if("" != dataInfo[i].speechLabel && null != dataInfo[i].speechLabel){
+
+                   strInfo = strInfo + "<div class=\"show-label\">类&nbsp;&nbsp;&nbsp;&nbsp;型：<span class=\"span-indent\">"+dataInfo[i].speechLabel+
+                       "</span></div>";
+               }
+               strInfo = strInfo + "</div>";
+
+           }
+       }
+       return strInfo;
+    }
+    function sendInitGetRequest(inputSearch, labelSearch, offset, limit, handleType) {
+        var URL_API = "{% url 'getSpeechcraftInfo' %}";
+        $.ajax({
+            url:URL_API,
+            type: 'GET',
+            dataType: 'json',
+            data: {'inputSearch': inputSearch, 'labelSearch': labelSearch, 'offset': offset, 'limit': limit, 'handleType': handleType},
+            success:function (result) {
+                if("开场白" == labelSearch){
+                    $("#index1").empty();
+                    var strInfo = appendInfo(result.rows);
+
+                    if("" != strInfo){
+                        $("#index1").html(strInfo);
+                    }
+
+                    {#$("#index1").append(JSON.stringify(result.rows));#}
+                    var number_of_items = result.total;
+                    var number_of_pages = Math.ceil(number_of_items/limit);
+                    initDiv(limit, number_of_items, number_of_pages);
+                }
+                if("导入产品" == labelSearch){
+                    $("#index4").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index4").html(strInfo);
+                    }
+                    {#$("#index4").append(JSON.stringify(result.rows));#}
+                    var number_of_items = result.total;
+                    var number_of_pages = Math.ceil(number_of_items/limit);
+                    initDiv(limit, number_of_items, number_of_pages);
+                }
+                if("激发兴趣" == labelSearch){
+                    $("#index2").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index2").html(strInfo);
+                    }
+                    {#$("#index2").append(JSON.stringify(result.rows));#}
+                    var number_of_items = result.total;
+                    var number_of_pages = Math.ceil(number_of_items/limit);
+                    initDiv(limit, number_of_items, number_of_pages);
+                }
+                if("挖掘需求" == labelSearch){
+                    $("#index3").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index3").html(strInfo);
+                    }
+                    {#$("#index3").append(JSON.stringify(result.rows));#}
+                    var number_of_items = result.total;
+                    var number_of_pages = Math.ceil(number_of_items/limit);
+                    initDiv(limit, number_of_items, number_of_pages);
+                }
+                if("邀约见面" == labelSearch){
+                    $("#index5").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index5").html(strInfo);
+                    }
+                    {#$("#index5").append(JSON.stringify(result.rows));#}
+                    var number_of_items = result.total;
+                    var number_of_pages = Math.ceil(number_of_items/limit);
+                    initDiv(limit, number_of_items, number_of_pages, handleType);
+                }
+            }
+        });
+
+    }
+
+    function clickRequest(inputSearch, labelSearch, offset, limit, handleType) {
+        var URL_API = "{% url 'getSpeechcraftInfo' %}";
+        $.ajax({
+            url:URL_API,
+            type: 'GET',
+            dataType: 'json',
+            data: {'inputSearch': inputSearch, 'labelSearch': labelSearch, 'offset': offset, 'limit': limit, 'handleType': handleType},
+            success:function (result) {
+                {#alert(JSON.stringify(result));#}
+                if("开场白" == labelSearch){
+                    {#$("#index1").append(JSON.stringify(result.rows));#}
+                    $("#index1").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index1").html(strInfo);
+                    }
+                }
+                if("导入产品" == labelSearch){
+                    {#$("#index4").append(JSON.stringify(result.rows));#}
+                    $("#index4").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index4").html(strInfo);
+                    }
+                }
+                if("激发兴趣" == labelSearch){
+                    {#$("#index2").append(JSON.stringify(result.rows));#}
+                    $("#index2").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index2").html(strInfo);
+                    }
+                }
+                if("挖掘需求" == labelSearch){
+                    {#$("#index3").append(JSON.stringify(result.rows));#}
+                    $("#index3").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index3").html(strInfo);
+                    }
+                }
+                if("邀约见面" == labelSearch){
+                    {#$("#index5").append(JSON.stringify(result.rows));#}
+                    $("#index5").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index5").html(strInfo);
+                    }
+                }
+            }
+        });
+    }
+    $("#imageClick").click(function () {
+        var searchtype = $("#inputSearchType").val();
+        handleMethod = 'searchMethod';
+        if(searchtype != undefined && GoalSearch != undefined){
+            sendInitGetRequest(searchtype, GoalSearch, 0, limitNum, handleMethod);
+        }
+
+    });
+</script>
+
+
+<script type="text/javascript">
+    //上一页
+    function initDiv(show_per_page, number_of_items, number_of_pages) {
+        $('#page_navigation').empty();
+        $('#show_per_page').val(show_per_page);
+        $('#current_page').val(0);
+        var navigation_html = '<a class="previous_link" href="javascript:previous();">上一页</a>';
+        var current_link = 0;
+        while(number_of_pages > current_link){
+            navigation_html += '<a class="page_link" href="javascript:go_to_page(' + current_link +')" longdesc="' + current_link +'">'+ (current_link + 1) +'</a>';
+            current_link++;
+        }
+        navigation_html += '<a class="next_link" href="javascript:next();">下一页</a>';
+        $('#page_navigation').html(navigation_html);
+        //add active_page class to the first page link
+        $('#page_navigation .page_link:first').addClass('active_page');
+    }
+    function previous(){
+        new_page = parseInt($('#current_page').val()) - 1;
+        //if there is an item before the current active link run the function
+        if($('.active_page').prev('.page_link').length==true){
+            go_to_page(new_page);
+        }
+
+    }
+    //下一页
+    function next(){
+        new_page = parseInt($('#current_page').val()) + 1;
+        //if there is an item after the current active link run the function
+        if($('.active_page').next('.page_link').length==true){
+            go_to_page(new_page);
+        }
+
+    }
+    //跳转某一页
+    function go_to_page(page_num){
+        //get the number of items shown per page
+        var show_per_page = parseInt($('#show_per_page').val());
+        //get the element number where to start the slice from
+        var start_from = page_num * show_per_page;
+        var inputSearch = $("#inputSearchType").val();
+        clickRequest(inputSearch, GoalSearch, start_from, limitNum, handleMethod);
+        $('#current_page').val(page_num);
+        $('.page_link[longdesc=' + page_num +']').addClass('active_page').siblings('.active_page').removeClass('active_page');
+    }
+</script>
+</html>

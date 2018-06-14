@@ -10,6 +10,7 @@ import os
 from SemSupport.settings import MEDIA_ROOT
 import random
 from customers.models import FormCustomer, SEOCustomer
+from speechcraft.models import Speechcraft
 from celery import task
 import datetime
 MAX_VALUE = 2147483647
@@ -233,3 +234,59 @@ def read_read_excel_seo(excel_path, excel_real_name):
                                                        channel=channel)
         os.remove(excel_path)
         print("===================SEO资料导入完成======================")
+
+@task
+def read_read_excel_speechcraft(excel_path, excel_real_name):
+    #文件位置
+    print("===================开始导入话术资料======================")
+    tmp_file = os.path.join(MEDIA_ROOT, excel_real_name)
+    if os.path.exists(excel_path):
+        ExcelFile = xlrd.open_workbook(excel_path)
+        sheet = ExcelFile.sheets()[0]
+        excel_name = sheet.name
+        rows_num = sheet.nrows
+        cols_num = sheet.ncols
+        print(excel_name, rows_num, cols_num)
+        if rows_num > 0 and cols_num > 0:
+            print("有数据")
+            for i in range(1, rows_num):
+                speechLabel = None
+                speechTitle = None
+                speechKeyword = None
+                speechQuestion = None
+                speechGoal = None
+                speechFlow = None
+                speechAnswer = None
+                speechRemark = None
+                speechCount = 0
+                speechCreateTime = None
+                for j in range(0, cols_num):
+                    if "话术对应标题" == sheet.cell_value(0, j):
+                        speechTitle = sheet.cell_value(i, j)
+                    if "话术对应关键词" == sheet.cell_value(0, j):
+                        speechKeyword = sheet.cell_value(i, j)
+                    if "话术对应问题" == sheet.cell_value(0, j):
+                        speechQuestion = sheet.cell_value(i, j)
+                    if "话术对应流程" == sheet.cell_value(0, j):
+                        speechFlow = sheet.cell_value(i, j)
+                    if "话术对应答案" == sheet.cell_value(0, j):
+                        speechAnswer = sheet.cell_value(i, j)
+                    if "话术对应目的" == sheet.cell_value(0, j):
+                        speechGoal = sheet.cell_value(i, j)
+                    if "话术对应标签" == sheet.cell_value(0, j):
+                        speechLabel = sheet.cell_value(i, j)
+                    if "话术对应备注" == sheet.cell_value(0, j):
+                        speechRemark = sheet.cell_value(i, j)
+
+                Speechcraft.objects.create(speechLabel=speechLabel,
+                                           speechGoal=speechGoal,
+                                           speechAnswer=speechAnswer,
+                                           speechFlow=speechFlow,
+                                           speechQuestion=speechQuestion,
+                                           speechKeyword=speechKeyword,
+                                           speechTitle=speechTitle,
+                                           speechRemark=speechRemark,
+                                           speechCreateTime=datetime.datetime.now(),
+                                           speechCount=0)
+        os.remove(excel_path)
+        print("===================话术资料导入完成======================")

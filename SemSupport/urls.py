@@ -20,7 +20,7 @@ from customers.views import formCustomerHandle
 import xadmin
 # 导入x admin，替换admin
 from django.views.static import serve
-
+from speechcraft.views import speechcraftshow, getSpeechcraftInfo, checkLoginInfo
 
 
 
@@ -36,6 +36,9 @@ urlpatterns = [
     # url('(?P<path>.*)$', serve, {'document_root': STATICFILES_DIRS}),
     url('^admin/customers/formcustomer/formCustomerHandle', formCustomerHandle.as_view(), name='formCustomerHandle'),
     url(r'^favicon.ico$', RedirectView.as_view(url=r'static/favicon.ico')),
+    url(r'^admin/speechcraftshow', speechcraftshow, name='speechcraftshow'),
+    url(r'^getSpeechcraftInfo', getSpeechcraftInfo, name="getSpeechcraftInfo"),
+    url(r'^checkLoginInfo', checkLoginInfo, name="checkLoginInfo")
 ]
 
 # 全局 404 500 页面配置（django 会自动调用这个变量）
