@@ -63,9 +63,9 @@ class seoCustomerHandle(View):
             pass
         else:
             if action == 'handleSEOFlagA':
-                SEOCustomer.objects.filter(id=int(needId)).update(seo_flag=1)
+                SEOCustomer.objects.filter(id=int(needId)).update(seo_flag=0)
                 msg = True
             if action == 'handleSEOFlagB':
-                SEOCustomer.objects.filter(id=int(needId)).update(seo_flag=0)
+                SEOCustomer.objects.filter(id=int(needId)).update(seo_flag=1)
                 msg = True
         return JsonResponse({'success': msg})

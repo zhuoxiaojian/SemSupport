@@ -154,6 +154,9 @@ class SeoSaleWork(SEOCustomer):
         return self.company_name
 
     def chang_flag(self):
-        return mark_safe('<a class="btn btn-primary" onclick="handleSEOFlag'+str(self.id)+'A();">有效</a>&nbsp;<a class="btn btn-primary" onclick="handleSEOFlag'+str(self.id)+'B();">无效</a><script type="text/javascript">function handleSEOFlag'+str(self.id)+'A(){ $.ajax({url:"seoCustomerHandle", data:{needId:'+str(self.id)+',action:"handleSEOFlagA"},type:"GET", dataType:"json", success:function(returned, status, xhr){window.location.reload();}});}function handleSEOFlag'+str(self.id)+'B(){ $.ajax({url:"seoCustomerHandle", data:{needId:'+str(self.id)+',action:"handleSEOFlagB"},type:"GET", dataType:"json", success:function(returned, status, xhr){console.log(returned.success);window.location.reload();}});}</script>')
+        if self.seo_flag == 0:
+            return mark_safe('<a class="btn btn-primary" onclick="handleSEOFlag'+str(self.id)+'B();">有效</a><script type="text/javascript">function handleSEOFlag'+str(self.id)+'B(){ $.ajax({url:"seoCustomerHandle", data:{needId:'+str(self.id)+',action:"handleSEOFlagB"},type:"GET", dataType:"json", success:function(returned, status, xhr){console.log(returned.success);window.location.reload();}});}</script>')
+        if self.seo_flag == 1:
+            return mark_safe('<a class="btn btn-primary" onclick="handleSEOFlag'+str(self.id)+'A();">无效</a><script type="text/javascript">function handleSEOFlag'+str(self.id)+'A(){ $.ajax({url:"seoCustomerHandle", data:{needId:'+str(self.id)+',action:"handleSEOFlagA"},type:"GET", dataType:"json", success:function(returned, status, xhr){window.location.reload();}});}</script>')
 
     chang_flag.short_description = '操作'
