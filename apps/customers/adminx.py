@@ -19,12 +19,12 @@ from django.utils.translation import ugettext as _
 #公司信息
 class FormCustomerAdmin(object):
 
-    list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', 'update_time')
+    list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', 'update_time', 'change_button')
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['company_name', 'url', 'company_type', 'city', 'create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
-    exclude = ['randid', 'useless_counter', ] #不显示列
+    exclude = ['randid', 'useless_counter', 'level'] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
     model_icon = 'fa fa-cog'
@@ -162,7 +162,7 @@ class FormCustomerImportAdmin(object):
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['create_time', 'sem_status', ]
-    exclude = ['randid', 'useless_counter', ] #不显示列
+    exclude = ['randid', 'useless_counter', 'level', ] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
     import_excel = True
@@ -214,7 +214,7 @@ class NewFormCustomerAdmin(object):
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['create_time', ]
-    exclude = ['randid', 'useless_counter', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
+    exclude = ['randid', 'useless_counter', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'level']
     show_bookmarks = False #屏蔽书签
     list_export = ('xls', )
     model_icon = 'fa fa-level-up'
@@ -256,7 +256,7 @@ class SuccessCustomerAdmin(object):
     search_fields = ('company_name', )
     list_per_page = 20
     readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
-    exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', 'remark', 'address', ] #不显示列
+    exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', 'remark', 'address', 'level', ] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
     model_icon = 'fa fa-handshake-o'
@@ -292,9 +292,15 @@ xadmin.site.register(SuccessCustomer, SuccessCustomerAdmin)
 
 
 class SeoSaleWorkAdmin(object):
-    list_display = ('company_name', 'company_type', 'link_man', 'tel_phone', 'mobile_phone', 'address', 'aike_status', 'seo_status', 'prefecture_level_city', 'create_date', )
+    list_display = ('company_name', 'link_man', 'tel_phone', 'mobile_phone', 'aike_status', 'seo_status', 'prefecture_level_city', 'create_date', 'seo_flag', 'chang_flag')
     list_filter = ('company_name', 'create_date', 'prefecture_level_city', )
     search_fields = ('company_name', )
+    readonly_fields = ['company_name', 'company_type', 'url', 'legal_man', 'issue_date', 'registration_authority',
+                       'link_man', 'sex', 'job', 'is_boss', 'isboss_mobile', 'mobile_phone_address',
+                       'mobile_carrieroperator', 'zip_code', 'scope_business', 'business_position', 'produce_address',
+                       'province', 'prefecture_level_city', 'county_district', 'address',  'register_year',
+                       'register_month', 'register_date', 'finance_principal', 'finance_principal_mobile', 'seo_status',
+                       'aike_status', 'create_date', 'update_date', ]
     list_per_page = 20
     exclude = ['rand_id', 'channel', 'level', ] #不显示列
     show_bookmarks = False #屏蔽书签
@@ -332,6 +338,8 @@ class SeoSaleWorkAdmin(object):
                     Fieldset(_('时间信息'),
                              'create_date', 'update_date',
                              ),
+                    Fieldset(_('是否有效'),
+                             'seo_flag')
                 ),
                 Side(
 

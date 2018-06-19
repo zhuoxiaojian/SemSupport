@@ -31,6 +31,7 @@ class FormCustomer(models.Model):
     depart = models.CharField(max_length=255, verbose_name='负责销售部门', null=True, blank=True)
     sales = models.CharField(max_length=255, verbose_name='负责销售人员', null=True, blank=True)
     business = models.IntegerField(verbose_name='商机', default=0)
+    level = models.IntegerField(verbose_name='乱换次数', default=0, null=False, blank=False)
 
     class Meta:
         db_table = 'form_customer'
@@ -40,6 +41,10 @@ class FormCustomer(models.Model):
 
     def __str__(self):
         return self.company_name
+
+    def change_button(self):
+        return mark_safe('<a  class="btn btn-primary" onclick="handleSEMMobile'+str(self.id)+'();"><i class="fa fa-trash-o"></i>&nbsp;清空手机号</a><script type="text/javascript">function handleSEMMobile'+str(self.id)+'(){ $.ajax({url:"formCustomerHandle", data:{needId:'+str(self.id)+',action:"handleSEMMobile"},type:"GET", dataType:"json", success:function(returned, status, xhr){window.location.reload();}});}</script>')
+    change_button.short_description = '操作'
 
     def change_url(self):
         # change_url.short_description = "公司域名"
@@ -56,6 +61,7 @@ class FormCustomer(models.Model):
 class SEOCustomer(models.Model):
     aike_status_level = ((0, u'否'), (1, u'是'))
     seo_status_level = ((0, u'否'), (1, u'是'))
+    seo_flag = ((0, u'无效'), (1, u'有效'))
     company_name = models.CharField(max_length=255, verbose_name='公司名称', db_index=True)
     url = models.CharField(max_length=255, verbose_name='公司域名', null=True, blank=True)
     link_man = models.CharField(max_length=255, verbose_name='联系人', null=True, blank=True)
@@ -93,7 +99,7 @@ class SEOCustomer(models.Model):
 
     #渠道1是原来的用户信息，渠道2是新导入的用户信息
     channel = models.CharField(max_length=255, verbose_name='来源渠道', null=True, blank=True)
-
+    seo_flag = models.IntegerField(verbose_name="是否有效", null=False, blank=False, default=1, choices=seo_flag)
 
     class Meta:
         db_table = 'ys_seo_customer'
@@ -140,9 +146,14 @@ class SeoSaleWork(SEOCustomer):
 
     class Meta:
         verbose_name = 'SEO任务库'
+        ordering = ['-create_date']
         verbose_name_plural = verbose_name
         proxy = True
 
     def __str__(self):
         return self.company_name
 
+    def chang_flag(self):
+        return mark_safe('<a class="btn btn-primary" onclick="handleSEOFlag'+str(self.id)+'A();">有效</a>&nbsp;<a class="btn btn-primary" onclick="handleSEOFlag'+str(self.id)+'B();">无效</a><script type="text/javascript">function handleSEOFlag'+str(self.id)+'A(){ $.ajax({url:"seoCustomerHandle", data:{needId:'+str(self.id)+',action:"handleSEOFlagA"},type:"GET", dataType:"json", success:function(returned, status, xhr){window.location.reload();}});}function handleSEOFlag'+str(self.id)+'B(){ $.ajax({url:"seoCustomerHandle", data:{needId:'+str(self.id)+',action:"handleSEOFlagB"},type:"GET", dataType:"json", success:function(returned, status, xhr){console.log(returned.success);window.location.reload();}});}</script>')
+
+    chang_flag.short_description = '操作'

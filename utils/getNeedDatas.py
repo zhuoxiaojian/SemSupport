@@ -243,7 +243,8 @@ def divide_seo_slae_work():
                 num = len(seo_sale_id)
                 limitNum = num * seo_info_num
                 seo_datas = SEOCustomer.objects.filter(Q(seo_status=0), Q(aike_status=0),
-                    prefecture_level_city__icontains=city.name).values('rand_id').\
+                                                       Q(mobile_phone__isnull=False),
+                                                       prefecture_level_city__icontains=city.name).values('rand_id').\
                                                                                 order_by('level',
                                                                                 '-create_date',
                                                                                 '-rand_id'

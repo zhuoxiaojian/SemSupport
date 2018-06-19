@@ -98,6 +98,7 @@ def update_seo_level():
                         limitNum = num * SEOInfoNum
                         update_city = city.name
                         q = SEOCustomer.objects.filter(Q(seo_status=0), Q(aike_status=0),
+                                                       Q(mobile_phone__isnull=False),
                                                        prefecture_level_city__icontains=update_city).order_by('level',
                                                                                                    '-create_date',
                                                                                                    '-rand_id'
@@ -109,6 +110,8 @@ def update_seo_level():
                                 u_l.level = u_l.level + 1
                                 u_l.update_date = datetime.datetime.now()
                                 u_l.save()
+    #将无效资料的手机号置空
+    SEOCustomer.objects.filter(seo_flag=0).update(mobile_phone=None)
     print("============================更新level标签结束================================")
 
 

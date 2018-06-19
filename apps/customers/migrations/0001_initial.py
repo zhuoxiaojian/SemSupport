@@ -36,6 +36,7 @@ class Migration(migrations.Migration):
                 ('depart', models.CharField(blank=True, max_length=255, null=True, verbose_name='负责销售部门')),
                 ('sales', models.CharField(blank=True, max_length=255, null=True, verbose_name='负责销售人员')),
                 ('business', models.IntegerField(default=0, verbose_name='商机')),
+                ('level', models.IntegerField(verbose_name='轮换次数', default=0, null=False, blank=False))
             ],
             options={
                 'verbose_name': '公司信息',
@@ -83,6 +84,7 @@ class Migration(migrations.Migration):
                 ('finance_principal', models.CharField(blank=True, max_length=255, null=True, verbose_name='财务负责人姓名')),
                 ('finance_principal_mobile', models.CharField(blank=True, max_length=255, null=True, verbose_name='财务负责人移动电话')),
                 ('channel', models.CharField(blank=True, max_length=255, null=True, verbose_name='来源渠道')),
+                ('seo_flag', models.IntegerField(verbose_name="是否有效", null=False, blank=False, default=1, choices=[(0, '无效'), (1, '有效')])),
             ],
             options={
                 'verbose_name': 'seo资料库',

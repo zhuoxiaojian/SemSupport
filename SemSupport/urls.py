@@ -16,7 +16,7 @@ Including another URLconf
 from django.urls import path, re_path
 from django.conf.urls import url,include
 from django.views.generic import RedirectView
-from customers.views import formCustomerHandle
+from customers.views import formCustomerHandle, seoCustomerHandle
 import xadmin
 # 导入x admin，替换admin
 from django.views.static import serve
@@ -38,7 +38,8 @@ urlpatterns = [
     url(r'^favicon.ico$', RedirectView.as_view(url=r'static/favicon.ico')),
     url(r'^admin/speechcraftshow', speechcraftshow, name='speechcraftshow'),
     url(r'^getSpeechcraftInfo', getSpeechcraftInfo, name="getSpeechcraftInfo"),
-    url(r'^checkLoginInfo', checkLoginInfo, name="checkLoginInfo")
+    url(r'^checkLoginInfo', checkLoginInfo, name="checkLoginInfo"),
+    url('^admin/customers/seosalework/seoCustomerHandle', seoCustomerHandle.as_view(), name='seoCustomerHandle'),
 ]
 
 # 全局 404 500 页面配置（django 会自动调用这个变量）
