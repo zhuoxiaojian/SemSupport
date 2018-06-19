@@ -48,6 +48,7 @@ def read_excel(excel_path, excel_real_name):
                 depart = None
                 sales = None
                 business = 0
+                level = 0
                 for j in range(0, cols_num):
                     if "公司名" == sheet.cell_value(0, j):
                         company_name = sheet.cell_value(i, j)
@@ -122,7 +123,8 @@ def read_excel(excel_path, excel_real_name):
                                 remark=remark, qq=qq, wechat=wechat, address=address, aike_status=aike_status,
                                 sem_status=sem_status, sales=sales, depart=depart, amount=amount, business=business,
                                 useless_counter=useless_counter, randid=randid, keyword=keyword, phone=phone,
-                                create_time=datetime.datetime.now()
+                                create_time=datetime.datetime.now(),
+                                level=level
                             )
 
         os.remove(excel_path)
@@ -168,6 +170,7 @@ def read_read_excel_seo(excel_path, excel_real_name):
                 aike_status = 0
                 seo_status = 0
                 level = 0
+                seo_flag = 1
                 for j in range(0, cols_num):
                     if "纳税人名称" == sheet.cell_value(0, j):
                         company_name = sheet.cell_value(i, j)
@@ -231,7 +234,8 @@ def read_read_excel_seo(excel_path, excel_real_name):
                                                        level=level,
                                                        create_date=datetime.datetime.now(),
                                                        update_date=None,
-                                                       channel=channel)
+                                                       channel=channel,
+                                                       seo_flag=seo_flag)
         os.remove(excel_path)
         print("===================SEO资料导入完成======================")
 

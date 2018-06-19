@@ -31,7 +31,7 @@ class FormCustomer(models.Model):
     depart = models.CharField(max_length=255, verbose_name='负责销售部门', null=True, blank=True)
     sales = models.CharField(max_length=255, verbose_name='负责销售人员', null=True, blank=True)
     business = models.IntegerField(verbose_name='商机', default=0)
-    level = models.IntegerField(verbose_name='乱换次数', default=0, null=False, blank=False)
+    level = models.IntegerField(verbose_name='轮换次数', default=0, null=False, blank=False)
 
     class Meta:
         db_table = 'form_customer'
