@@ -103,8 +103,8 @@ ul,li{
     margin: 8px auto;
     background-color: #fff;
     border-radius: 10px;
-    padding-bottom: 10px;
-    text-indent: 1em;
+    /*padding-bottom: 10px;
+    text-indent: 1em;*/
 }
 .span-indent{
     display: inline-block;
@@ -123,3 +123,7 @@ ul,li{
     bottom: 50px;
     left: 5%;
 }
+td{
+    padding:0 5px;
+}
+

@@ -111,37 +111,37 @@
        var strInfo = "";
        if(dataInfo.length >0){
            for(var i=0; i<dataInfo.length; i++){
-               strInfo = strInfo + "<div class=\"show-list\">";
+               strInfo = strInfo + "<table class=\"show-list\"><tbody>";
                if("" != dataInfo[i].speechTitle && null != dataInfo[i].speechTitle){
-                   strInfo = strInfo + "<div class=\"show-title\">标&nbsp;&nbsp;&nbsp;&nbsp;题：<span class=\"span-indent\">"+dataInfo[i].speechTitle +
-                       "</span></div>";
+                   strInfo = strInfo + "<tr><td style=\"width:20px;\">标&nbsp;&nbsp;&nbsp;&nbsp;题：</td><td>"+dataInfo[i].speechTitle +
+                       "</td></tr>";
                }
                if("" != dataInfo[i].speechKeyword && null != dataInfo[i].speechKeyword){
-                   strInfo = strInfo + "<div class=\"show-keyword\">关键词：<span class=\"span-indent\">"+dataInfo[i].speechKeyword+
-                            "</span></div>";
+                   strInfo = strInfo + "<tr><td style=\"width:20px;\">关键词：</td><td>"+dataInfo[i].speechKeyword+
+                       "</td></tr>";
                }
                if("" != dataInfo[i].speechGoal && null != dataInfo[i].speechGoal){
-                   strInfo = strInfo + "<div class=\"show-goal\">目&nbsp;&nbsp;&nbsp;&nbsp;的：<span class=\"span-indent\">"+dataInfo[i].speechGoal+
-                       "</span></div>";
+                   strInfo = strInfo + "<tr><td style=\"width:20px;\">目&nbsp;&nbsp;&nbsp;&nbsp;的：</td><td>"+dataInfo[i].speechGoal+
+                       "</td></tr>";
                }
                if("" != dataInfo[i].speechQuestion && null != dataInfo[i].speechQuestion){
-                   strInfo = strInfo + "<div class=\"show-question\">问&nbsp;&nbsp;&nbsp;&nbsp;题：<span class=\"span-indent\">"+dataInfo[i].speechQuestion+
-                       "</span></div>";
+                   strInfo = strInfo + "<tr><td style=\"width:20px;\">问&nbsp;&nbsp;&nbsp;&nbsp;题：</td><td>"+dataInfo[i].speechQuestion+
+                       "</td></tr>";
                }
                if("" != dataInfo[i].speechFlow && null != dataInfo[i].speechFlow){
-                   strInfo = strInfo + "<div class=\"show-flow\">流&nbsp;&nbsp;&nbsp;&nbsp;程：<span class=\"span-indent\">"+dataInfo[i].speechFlow+
-                       "</span></div>";
+                   strInfo = strInfo + "<tr><td style=\"width:20px;\">流&nbsp;&nbsp;&nbsp;&nbsp;程：</td><td>"+dataInfo[i].speechFlow+
+                       "</td></tr>";
                }
                if("" != dataInfo[i].speechAnswer && null != dataInfo[i].speechAnswer){
-                   strInfo = strInfo + "<div class=\"show-answer\">回&nbsp;&nbsp;&nbsp;&nbsp;答：<span class=\"span-indent\">"+dataInfo[i].speechAnswer+
-                       "</span></div>";
+                   strInfo = strInfo + "<tr><td style=\"width:20px;\">回&nbsp;&nbsp;&nbsp;&nbsp;答：</td><td>"+dataInfo[i].speechAnswer+
+                       "</td></tr>";
                }
                if("" != dataInfo[i].speechLabel && null != dataInfo[i].speechLabel){
 
-                   strInfo = strInfo + "<div class=\"show-label\">类&nbsp;&nbsp;&nbsp;&nbsp;型：<span class=\"span-indent\">"+dataInfo[i].speechLabel+
-                       "</span></div>";
+                   strInfo = strInfo + "<tr><td style=\"width:20px;\">类&nbsp;&nbsp;&nbsp;&nbsp;型：</td><td>"+dataInfo[i].speechLabel+
+                       "</td></tr>";
                }
-               strInfo = strInfo + "</div>";
+               strInfo = strInfo + "</tbody></table>";
 
            }
        }
