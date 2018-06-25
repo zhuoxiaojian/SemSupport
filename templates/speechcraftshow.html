@@ -45,7 +45,9 @@
             <li class="wrap_li">激发兴趣</li>
             <li class="wrap_li">挖掘需求</li>
             <li class="wrap_li">导入产品 </li>
-            <li class="wrap_li border-none">邀约见面 </li>
+            <li class="wrap_li">邀约见面 </li>
+            <li class="wrap_li">疑难解答</li>
+            <li class="wrap_li border-none">知识普及</li>
         </ul>
         <div class="search">
             <input type="text" name="searchType" value="" id="inputSearchType" placeholder="  输入关键字">
@@ -65,6 +67,8 @@
             <div class="show-border none show" id="index3"></div>
             <div class="show-border none show" id="index4"></div>
             <div class="show-border none show" id="index5"></div>
+            <div class="show-border none show" id="index6"></div>
+            <div class="show-border none show" id="index7"></div>
         </div>
 
     </div>
@@ -212,6 +216,28 @@
                     var number_of_pages = Math.ceil(number_of_items/limit);
                     initDiv(limit, number_of_items, number_of_pages, handleType);
                 }
+                if("疑难解答" == labelSearch){
+                    $("#index6").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index6").html(strInfo);
+                    }
+                    {#$("#index5").append(JSON.stringify(result.rows));#}
+                    var number_of_items = result.total;
+                    var number_of_pages = Math.ceil(number_of_items/limit);
+                    initDiv(limit, number_of_items, number_of_pages, handleType);
+                }
+                if("知识普及" == labelSearch){
+                    $("#index7").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index7").html(strInfo);
+                    }
+                    {#$("#index5").append(JSON.stringify(result.rows));#}
+                    var number_of_items = result.total;
+                    var number_of_pages = Math.ceil(number_of_items/limit);
+                    initDiv(limit, number_of_items, number_of_pages, handleType);
+                }
             }
         });
 
@@ -264,6 +290,22 @@
                     var strInfo = appendInfo(result.rows);
                     if("" != strInfo){
                         $("#index5").html(strInfo);
+                    }
+                }
+                if("疑难解答" == labelSearch){
+                    {#$("#index5").append(JSON.stringify(result.rows));#}
+                    $("#index6").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index6").html(strInfo);
+                    }
+                }
+                if("知识普及" == labelSearch){
+                    {#$("#index5").append(JSON.stringify(result.rows));#}
+                    $("#index7").empty();
+                    var strInfo = appendInfo(result.rows);
+                    if("" != strInfo){
+                        $("#index7").html(strInfo);
                     }
                 }
             }

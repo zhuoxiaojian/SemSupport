@@ -2,7 +2,7 @@ from django.db import models
 from datetime import datetime
 # Create your models here.
 class Speechcraft(models.Model):
-    label = (('开场白', u'开场白'), ('激发兴趣', u'激发兴趣'), ('挖掘需求', u'挖掘需求'), ('导入产品', u'导入产品'), ('邀约见面', u'邀约见面'))
+    label = (('开场白', u'开场白'), ('激发兴趣', u'激发兴趣'), ('挖掘需求', u'挖掘需求'), ('导入产品', u'导入产品'), ('邀约见面', u'邀约见面'), ('疑难解答', u'疑难解答'), ('知识普及', u'知识普及'))
     speechLabel = models.CharField(max_length=255, verbose_name='话术对应类型', null=False, blank=False, choices=label)
     speechTitle = models.CharField(max_length=255, verbose_name='话术对应标题', null=True, blank=True)
     speechKeyword = models.CharField(max_length=255, verbose_name='话术对应关键词', null=True, blank=True)

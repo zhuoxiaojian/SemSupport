@@ -25,6 +25,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='speechcraft',
             name='speechLabel',
-            field=models.CharField(choices=[('开场白', '开场白'), ('激发兴趣', '激发兴趣'), ('挖掘需求', '挖掘需求'), ('导入产品', '导入产品'), ('邀约见面', '邀约见面')], max_length=255, verbose_name='话术对应类型'),
+            field=models.CharField(choices=[('开场白', '开场白'), ('激发兴趣', '激发兴趣'), ('挖掘需求', '挖掘需求'), ('导入产品', '导入产品'), ('邀约见面', '邀约见面'), ('疑难解答', '疑难解答'), ('知识普及', '知识普及')], max_length=255, verbose_name='话术对应类型'),
         ),
     ]
