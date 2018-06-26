@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('business', models.IntegerField(default=0, verbose_name='商机')),
                 ('level', models.IntegerField(verbose_name='轮换次数', default=0, null=False, blank=False)),
                 ('discover_time', models.DateTimeField(verbose_name='最近发现时间', null=True, blank=True)),
-                ('discover_count', models.IntegerField(verbose_name='发现次数', default=0, null=False, blank=False)),
+                ('discover_count', models.IntegerField(verbose_name='发现次数', default=1, null=False, blank=False)),
 
     ],
             options={
