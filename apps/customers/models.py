@@ -23,7 +23,7 @@ class FormCustomer(models.Model):
     city = models.CharField(max_length=255, verbose_name='所在城市', null=True, blank=True)
     address = models.TextField(verbose_name='地址', null=True, blank=True)
     create_time = models.DateTimeField(verbose_name='首次发现', default=datetime.now, blank=True)
-    update_time = models.DateTimeField(verbose_name='最后发现', blank=True, null=True, default=None)
+    update_time = models.DateTimeField(verbose_name='最后更新', blank=True, null=True, default=None)
     remark = models.TextField(verbose_name='备注', blank=True, null=True)
     randid = models.BigIntegerField(db_index=True, verbose_name='随机数', default=random.randint(1, MAX_VALUE))
     keyword = models.CharField(max_length=255, verbose_name='搜索关键词', null=True, blank=True)
@@ -32,6 +32,8 @@ class FormCustomer(models.Model):
     sales = models.CharField(max_length=255, verbose_name='负责销售人员', null=True, blank=True)
     business = models.IntegerField(verbose_name='商机', default=0)
     level = models.IntegerField(verbose_name='轮换次数', default=0, null=False, blank=False)
+    discover_time = models.DateTimeField(verbose_name='最近发现时间', null=True, blank=True)
+    discover_count = models.IntegerField(verbose_name='发现次数', default=0, null=False, blank=False)
 
     class Meta:
         db_table = 'form_customer'

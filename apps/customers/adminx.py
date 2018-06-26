@@ -19,11 +19,11 @@ from django.utils.translation import ugettext as _
 #公司信息
 class FormCustomerAdmin(object):
 
-    list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', 'update_time', 'change_button')
+    list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', 'update_time', 'discover_time', 'discover_count', 'change_button')
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
-    readonly_fields = ['company_name', 'url', 'company_type', 'city', 'create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
+    readonly_fields = ['company_name', 'url', 'company_type', 'city', 'create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'discover_time', 'discover_count',]
     exclude = ['randid', 'useless_counter', 'level'] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
@@ -48,6 +48,9 @@ class FormCustomerAdmin(object):
                              ),
                     Fieldset(_('时间信息'),
                              'create_time', 'update_time',
+                             ),
+                    Fieldset(_('发现信息'),
+                             'discover_time', 'discover_count',
                              ),
                 ),
                 Side(
@@ -161,7 +164,7 @@ class FormCustomerImportAdmin(object):
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
-    readonly_fields = ['create_time', 'sem_status', ]
+    readonly_fields = ['create_time', 'sem_status', 'discover_time', 'discover_count', ]
     exclude = ['randid', 'useless_counter', 'level', ] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
@@ -188,6 +191,9 @@ class FormCustomerImportAdmin(object):
                     Fieldset(_('时间信息'),
                              'create_time', 'update_time',
                              ),
+                    Fieldset(_('发现信息'),
+                             'discover_time', 'discover_count',
+                             ),
                 ),
                 Side(
 
@@ -209,11 +215,11 @@ xadmin.site.register(FormCustomerImport, FormCustomerImportAdmin)
 
 #最新资料，销售经理可用
 class NewFormCustomerAdmin(object):
-    list_display = ('company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', )
+    list_display = ('company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'address', 'remark', 'create_time', 'discover_time', 'discover_count', )
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
-    readonly_fields = ['create_time', ]
+    readonly_fields = ['create_time', 'discover_time', 'discover_count', ]
     exclude = ['randid', 'useless_counter', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'level']
     show_bookmarks = False #屏蔽书签
     list_export = ('xls', )
@@ -251,11 +257,11 @@ xadmin.site.register(NewFormCustomer, NewFormCustomerAdmin)
 
 #成功案例
 class SuccessCustomerAdmin(object):
-    list_display = ('company_name', 'url', 'company_type', 'city', 'create_time', 'update_time')
+    list_display = ('company_name', 'url', 'company_type', 'city', 'create_time', 'update_time', 'discover_time', 'discover_count', )
     list_filter = ('company_name', 'create_time', 'city', )
     search_fields = ('company_name', )
     list_per_page = 20
-    readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount']
+    readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'discover_time', 'discover_count', ]
     exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', 'remark', 'address', 'level', ] #不显示列
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
@@ -277,6 +283,9 @@ class SuccessCustomerAdmin(object):
                              ),
                     Fieldset(_('时间信息'),
                              'create_time', 'update_time',
+                             ),
+                    Fieldset(_('发现信息'),
+                             'discover_time', 'discover_count',
                              ),
                 ),
                 Side(
