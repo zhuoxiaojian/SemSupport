@@ -100,7 +100,7 @@ ul,li{
 }
 .show-list{
     width: 95%;
-    margin: 8px auto;
+    margin: 20px auto;
     background-color: #fff;
     border-radius: 10px;
     /*padding-bottom: 10px;
@@ -125,5 +125,8 @@ ul,li{
 }
 td{
     padding:0 5px;
+}
+tr{
+    line-height: 40px;
 }
 
