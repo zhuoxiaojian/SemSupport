@@ -115,7 +115,46 @@ def update_seo_level():
     print("============================更新level标签结束================================")
 
 
+#定时更新SEM资料轮换次数
+@task
+def update_sem_level():
+    print("============================SEM：开始更新level标签================================")
+    date_from = '2017-01-01 00:00:00'
+    date_to = get_before_oneweek()
+    SEMInfoNum_str = getConstantsVale('smsNum')
+    if SEMInfoNum_str is None:
+        SEMInfoNum_str = str(250)
+    SEMInfoNum = int(SEMInfoNum_str)
 
+    sem_sale = get_sale()
+
+    #根据城市分配
+    frcDatas = FormRegionCity.objects.all()
+    if frcDatas.exists():
+        for city in frcDatas:
+            if sem_sale.exists():
+                for sem in sem_sale:
+                    sem_sale_id = []
+                    if(sem.city==city):
+                        sem_sale_id.append(sem.id)
+                    if len(sem_sale_id) > 0:
+                        num = len(sem_sale_id)
+                        limitNum = num * SEMInfoNum
+                        q = FormCustomer.objects.filter(Q(sem_status=0),
+                                                        Q(aike_status=0),
+                                                        Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
+                                                        city=city).order_by('level',
+                                                                            '-randid',
+                                                                            'create_time'
+                                                                            )[0:limitNum]
+                        # print(q.query)
+                        if q.exists():
+                            for qs in q:
+                                u_l = FormCustomer.objects.get(id=qs.id)
+                                u_l.level = u_l.level + 1
+                                u_l.update_time = datetime.datetime.now()
+                                u_l.save()
+    print("============================更新SEM的level标签结束================================")
 
 
 

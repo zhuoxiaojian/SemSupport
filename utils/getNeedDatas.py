@@ -277,6 +277,67 @@ def get_seo_sale_work(userId):
     return rand_id_list
 
 
+#---------------------------------------SEM新分配方法------------------------------------------------------
+#分配SEM销售人员对应的资料
+def divide_sem_slae_work_new():
+    date_from = '2017-01-01 00:00:00'
+    date_to = get_before_oneweek()
+    sem_info_num_str = getConstantsVale('smsNum')
+    if sem_info_num_str is None:
+        sem_info_num_str = str(250)
+    sem_info_num = int(sem_info_num_str)
+    dict = {}
+    sem_sales = get_sale()
+    citys = FormRegionCity.objects.all()
+    if citys.exists():
+        for city in citys:
+            sem_sale_id = []
+            if sem_sales.exists():
+                for sem_sale in sem_sales:
+                    if sem_sale.city.name == city.name:
+                        sem_sale_id.append(sem_sale.id)
+            if len(sem_sale_id) > 0:
+                result_list = []
+                num = len(sem_sale_id)
+                limitNum = num * sem_info_num
+                sem_datas = FormCustomer.objects.filter(Q(sem_status=0),
+                                                        Q(aike_status=0),
+                                                        Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
+                                                        city__icontains=city.name,
+                                                        ).values('randid'). order_by('level',
+                                                                                     '-randid',
+                                                                                     'create_time'
+                                                                                     )[0:limitNum]
+                # print(sem_datas.query)
+                if sem_datas.exists():
+                    sem_data_list = []
+                    for sem_data in sem_datas:
+                        sem_data_list.append(sem_data)
+                    result_list = averageAssing(sem_data_list, num)
+                if len(result_list) > 0:
+                    count = 0
+                    for id in sem_sale_id:
+                        user = UserProfile.objects.get(id=id)
+                        if not user is None:
+                            dict[str(id)+user.username] = result_list[count]
+                            count = count + 1
+    return dict
+
+#获取SEO销售人员对应的资料
+def get_sem_sale_work_new(userId):
+    rand_id_list = []
+    user = UserProfile.objects.get(id=userId)
+    dict = divide_sem_slae_work_new()
+    if not user is None:
+        key = str(userId)+user.username
+        if dict:
+            rand_id = dict.get(key)
+            for rand in rand_id:
+                rand_id_list.append(rand.get('randid'))
+    # print(rand_id_list)
+    return rand_id_list
+
+
 
 
 
