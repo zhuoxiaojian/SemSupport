@@ -323,7 +323,7 @@ def divide_sem_slae_work_new():
                             count = count + 1
     return dict
 
-#获取SEO销售人员对应的资料
+#获取SEM销售人员对应的资料
 def get_sem_sale_work_new(userId):
     rand_id_list = []
     user = UserProfile.objects.get(id=userId)
