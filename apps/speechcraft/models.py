@@ -6,7 +6,7 @@ class Speechcraft(models.Model):
     speechLabel = models.CharField(max_length=255, verbose_name='话术对应类型', null=False, blank=False, choices=label)
     speechTarget = models.CharField(max_length=255, verbose_name='话术适用对象', null=True, blank=True)
     speechTitle = models.CharField(max_length=255, verbose_name='话术对应标题', null=True, blank=True)
-    speechKeyword = models.CharField(max_length=255, verbose_name='话术对应关键词', null=True, blank=True)
+    speechKeyword = models.TextField(max_length=255, verbose_name='话术对应关键词', null=True, blank=True)
     speechQuestion = models.CharField(max_length=255, verbose_name='话术对应问题', null=True, blank=True)
     speechGoal = models.TextField(verbose_name='话术对应目的', null=True, blank=True)
     speechFlow = models.TextField(verbose_name='话术对应流程', null=True, blank=True)

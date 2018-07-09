@@ -66,7 +66,7 @@ def getSpeechcraftInfo(request):
                 response_data['rows'].append({
                     "id": asset.id if asset.id else "",
                     "speechTitle": asset.speechTitle if asset.speechTitle else "",
-                    "speechKeyword": asset.speechKeyword if asset.speechKeyword else "",
+                    "speechKeyword": asset.speechKeyword.replace("\n", "<br/>") if asset.speechKeyword else "",
                     "speechQuestion": asset.speechQuestion if asset.speechQuestion else "",
                     "speechFlow": asset.speechFlow.replace("\n", "<br/>") if asset.speechFlow else "",
                     "speechAnswer": asset.speechAnswer.replace("\n", "<br/>") if asset.speechAnswer else "",

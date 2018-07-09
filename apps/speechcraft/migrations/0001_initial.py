@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('speechTitle', models.CharField(blank=True, max_length=255, null=True, verbose_name='话术对应标题')),
                 ('speechTarget', models.CharField(max_length=255, verbose_name='话术适用对象', null=True, blank=True)),
-                ('speechKeyword', models.CharField(blank=True, max_length=255, null=True, verbose_name='话术对应关键词')),
+                ('speechKeyword', models.TextField(blank=True, max_length=255, null=True, verbose_name='话术对应关键词')),
                 ('speechQuestion', models.CharField(blank=True, max_length=255, null=True, verbose_name='话术对应问题')),
                 ('speechFlow', models.TextField(blank=True, null=True, verbose_name='话术对应流程')),
                 ('speechAnswer', models.TextField(blank=True, null=True, verbose_name='话术对应内容')),
