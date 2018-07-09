@@ -38,9 +38,7 @@ def getSpeechcraftInfo(request):
                 if handleType == 'searchMethod' and inputSearch != "":
                     all_records = Speechcraft.objects.filter(Q(speechKeyword__icontains=inputSearch.replace(' ', '')) |
                                                              Q(speechAnswer__icontains=inputSearch.replace(' ', '')) |
-                                                             Q(speechGoal__icontains=inputSearch.replace(' ', '')) |
-                                                             Q(speechQuestion__icontains=inputSearch.replace(' ', '')) |
-                                                             Q(speechTitle__icontains=inputSearch.replace(' ', '')),
+                                                             Q(speechGoal__icontains=inputSearch.replace(' ', '')),
                                                              speechLabel__icontains=labelSearch.replace(' ', '')
                                                              ).order_by('-speechCreateTime')
                 else:
@@ -76,6 +74,7 @@ def getSpeechcraftInfo(request):
                     "speechLabel": asset.speechLabel if asset.speechLabel else "",
                     "speechRemark": asset.speechRemark.replace("\n", "<br/>") if asset.speechRemark else "",
                     "speechCount": asset.speechCount if asset.speechCount else "",
+                    "speechTarget": asset.speechTarget if asset.speechTarget else "",
                     # "speechCreateTime": asset.speechCreateTime if asset.speechCreateTime else "",
                 })
 

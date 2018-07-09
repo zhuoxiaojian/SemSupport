@@ -13,9 +13,10 @@ from django.core.files.base import ContentFile
 from SemSupport.settings import MEDIA_ROOT
 from utils.readExcelUtil import read_read_excel_speechcraft
 class SpeechcraftAdmin(object):
-    list_display = ('speechQuestion', 'speechFlow', 'speechAnswer', 'speechGoal', 'speechTitle', 'speechLabel', 'speechCreateTime')
-    list_filter = ('speechQuestion', 'speechTitle', 'speechLabel',)
-    search_fields = ('speechQuestion', )
+    list_display = ('speechTarget', 'speechKeyword',  'speechGoal', 'speechAnswer', 'speechLabel', 'speechCreateTime')
+    list_filter = ('speechGoal', 'speechKeyword', 'speechAnswer', 'speechLabel', )
+    search_fields = ('speechKeyword', )
+    exclude = ['speechTitle', 'speechQuestion', 'speechFlow', 'speechRemark', 'speechCount']
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
     import_excel = True

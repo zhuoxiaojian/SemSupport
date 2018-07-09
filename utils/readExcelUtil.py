@@ -262,6 +262,7 @@ def read_read_excel_speechcraft(excel_path, excel_real_name):
                 speechFlow = None
                 speechAnswer = None
                 speechRemark = None
+                speechTarget = None
                 speechCount = 0
                 speechCreateTime = None
                 for j in range(0, cols_num):
@@ -281,6 +282,8 @@ def read_read_excel_speechcraft(excel_path, excel_real_name):
                         speechLabel = sheet.cell_value(i, j)
                     if "话术对应备注" == sheet.cell_value(0, j):
                         speechRemark = sheet.cell_value(i, j)
+                    if "话术适用对象" == sheet.cell_value(0, j):
+                        speechTarget = sheet.cell_value(i, j)
 
                 Speechcraft.objects.create(speechLabel=speechLabel,
                                            speechGoal=speechGoal,
@@ -291,6 +294,7 @@ def read_read_excel_speechcraft(excel_path, excel_real_name):
                                            speechTitle=speechTitle,
                                            speechRemark=speechRemark,
                                            speechCreateTime=datetime.datetime.now(),
+                                           speechTarget=speechTarget,
                                            speechCount=0)
         os.remove(excel_path)
         print("===================话术资料导入完成======================")
