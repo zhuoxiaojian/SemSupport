@@ -14,14 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, re_path
-from django.conf.urls import url,include
+from django.conf.urls import url, include
 from django.views.generic import RedirectView
 from customers.views import formCustomerHandle, seoCustomerHandle
 import xadmin
 # 导入x admin，替换admin
 from django.views.static import serve
 from speechcraft.views import speechcraftshow, getSpeechcraftInfo, checkLoginInfo
-
+from SemSupport.settings import MEDIA_ROOT
 
 
 urlpatterns = [
@@ -30,7 +30,7 @@ urlpatterns = [
     # path('refleshAdData/', xadmin.site.urls),
     url('^login/', RedirectView.as_view(url='/admin'), name='login'),
     # 处理图片显示的url,使用Django自带serve,传入参数告诉它去哪个路径找，我们有配置好的路径MEDIAROOT
-    # re_path('media/(?P<path>.*)', serve, {"document_root": MEDIA_ROOT }),
+    url(r'^media/(?P<path>.*)$',  serve, {"document_root": MEDIA_ROOT}),
     # url('^captcha/', include('captcha.urls')),
     # 配置静态文件访问
     # url('(?P<path>.*)$', serve, {'document_root': STATICFILES_DIRS}),

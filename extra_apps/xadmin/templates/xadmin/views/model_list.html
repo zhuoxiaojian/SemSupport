@@ -7,6 +7,10 @@
 <style type="text/css">
   .btn-toolbar{margin-top: 0;}
   #content-block.full-content{margin-left: 0;}
+  th{
+      text-align:center;/** 设置水平方向居中 */
+      vertical-align:middle/** 设置垂直方向居中 */
+  }
 </style>
 {% endblock %}
 {% block bodyclass %}change-list{% endblock %}
@@ -93,7 +97,8 @@
             </div>
           {% endif %}
           {% if o.menus %}
-            <div class="dropdown pull-left">
+              {% comment %}class="dropdown pull-left"{% endcomment %}
+            <div >
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 {{ o.label }}
               </a>

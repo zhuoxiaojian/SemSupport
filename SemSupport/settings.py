@@ -34,8 +34,10 @@ ALLOWED_HOSTS = ['192.168.3.33']
 
 #测试服
 # ALLOWED_HOSTS = [
-#     '127.0.0.1',
-#     'preview.semsupport.dgo.nisure.net'
+# '127.0.0.1',
+# 'preview.semsupport.dgo.nisure.net',
+# 'pre.pydgosmsfinalts.e.nisure.net',
+# 'sms.nisure.net',
 # ]
 
 
@@ -63,7 +65,8 @@ INSTALLED_APPS = [
     'addup',
     'channel',
     'constants',
-    'speechcraft'
+    'speechcraft',
+    'audio'
 ]
 
 MIDDLEWARE = [
@@ -187,7 +190,8 @@ STATICFILES_DIRS = [
 #修改一下BASE_DIR的位置就可以了。
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
+#/repo/project/SemSupport/audioFiles  正式服
+# MEDIA_ROOT = os.path.join('/repo/project/SemSupport', 'media')
 #LOGGING配置
 LOGGING = {
     'version': 1,
