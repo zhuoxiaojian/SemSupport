@@ -14,7 +14,7 @@ class Audio(models.Model):
     anInterviewCompany = models.CharField(max_length=255, verbose_name='被访公司', blank=True, null=True)
     anInterviewPeople = models.TextField(verbose_name='被访公司参与人员', blank=True, null=True)
     partakeSale = models.TextField(verbose_name='我司参与销售', blank=True, null=True)
-    audioFile = models.FileField(upload_to='audioFiles/', verbose_name='音频文件', blank=False, null=False, help_text='请选择不大于5M的mp3文件', validators=[validate_file_extension])
+    audioFile = models.FileField(upload_to='audioFiles/', verbose_name='音频文件', blank=False, null=False, help_text='请选择不大于10M的mp3文件', validators=[validate_file_extension])
     createTime = models.DateTimeField(verbose_name='创建时间', default=datetime.datetime.now)
 
     class Meta:
