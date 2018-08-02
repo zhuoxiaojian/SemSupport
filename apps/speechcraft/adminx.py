@@ -19,6 +19,7 @@ class SpeechcraftAdmin(object):
     exclude = ['speechTitle', 'speechQuestion', 'speechFlow', 'speechRemark', 'speechCount']
     show_bookmarks = False #屏蔽书签
     list_export = ()#设置不显示导出按钮
+    style_fields = {"speechAnswer": "ueditor"}
     import_excel = True
     model_icon = 'fa fa-language'
     def post(self, request, *args, **kwargs):

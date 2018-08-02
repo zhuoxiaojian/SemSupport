@@ -40,6 +40,8 @@ urlpatterns = [
     url(r'^getSpeechcraftInfo', getSpeechcraftInfo, name="getSpeechcraftInfo"),
     url(r'^checkLoginInfo', checkLoginInfo, name="checkLoginInfo"),
     url('^admin/customers/seosalework/seoCustomerHandle', seoCustomerHandle.as_view(), name='seoCustomerHandle'),
+    #富文本编辑器
+    url(r'^ueditor/', include('DjangoUeditor.urls')),
 ]
 
 # 全局 404 500 页面配置（django 会自动调用这个变量）
