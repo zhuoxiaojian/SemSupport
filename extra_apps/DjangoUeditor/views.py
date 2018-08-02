@@ -340,8 +340,13 @@ def save_scrawl_file(request, filename):
     try:
         content = request.POST.get(
             USettings.UEditorUploadSettings.get("scrawlFieldName", "upfile"))
-        f = open(filename, 'wb')
-        f.write(base64.decodestring(content))
+
+        file_find = os.path.exists(filename.replace('\\', '/'))
+        if ~file_find:
+            print('文件不存在')
+        f = open(filename.replace('\\', '/'), 'wb')
+        print(base64.b64decode(content))
+        f.write(base64.b64decode(content))
         f.close()
         state = "SUCCESS"
     except Exception as E:
