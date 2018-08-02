@@ -30,15 +30,15 @@ SECRET_KEY = '_bzqh4dw8^%s&qyf*qmrbn+lj8ftr10u(-o4ix^-f5qbdxv@48'
 DEBUG = True
 # DEBUG = False
 
-ALLOWED_HOSTS = ['192.168.3.33']
+# ALLOWED_HOSTS = ['192.168.3.33']
 
 #测试服
-# ALLOWED_HOSTS = [
-# '127.0.0.1',
-# 'preview.semsupport.dgo.nisure.net',
-# 'pre.pydgosmsfinalts.e.nisure.net',
-# 'sms.nisure.net',
-# ]
+ALLOWED_HOSTS = [
+'127.0.0.1',
+'preview.semsupport.dgo.nisure.net',
+'pre.pydgosmsfinalts.e.nisure.net',
+'sms.nisure.net',
+]
 
 
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -108,28 +108,28 @@ WSGI_APPLICATION = 'SemSupport.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sms',
-        'HOST': 'localhost',
-        'PORT': 22799,
-        'USER': 'root',
-        'PASSWORD': '123456'
-    }
-}
-
-#测试服
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'SemSupport',
-#         'HOST': 'testdb.nisure.net',
-#         'PORT': 22701,
-#         'USER': 'testdb_sms',
-#         'PASSWORD': 'j7F7hr6a9cvnngaeee72q9zg2spfoetN'
+#         'NAME': 'sms',
+#         'HOST': 'localhost',
+#         'PORT': 22799,
+#         'USER': 'root',
+#         'PASSWORD': '123456'
 #     }
 # }
+
+#测试服
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'SemSupport',
+        'HOST': 'testdb.nisure.net',
+        'PORT': 22701,
+        'USER': 'testdb_sms',
+        'PASSWORD': 'j7F7hr6a9cvnngaeee72q9zg2spfoetN'
+    }
+}
 
 #正式服
 # DATABASES = {
