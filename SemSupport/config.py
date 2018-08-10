@@ -14,8 +14,8 @@ from celery.schedules import crontab
 # CELERY_RESULT_BAKEND = 'redis://:123456@127.0.0.1:6379/2'
 
 #测试服
-BROKER_URL = 'redis://:123456@sms_redis:6379/1'
-CELERY_RESULT_BAKEND = 'redis://:123456@sms_redis:6379/2'
+BROKER_URL = 'redis://:123456@smsredis:6379/1'
+CELERY_RESULT_BAKEND = 'redis://:123456@smsredis:6379/2'
 
 # celery内容等消息的格式设置
 CELERY_ACCEPT_CONTENT = ['application/json']
