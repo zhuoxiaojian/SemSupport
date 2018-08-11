@@ -40,7 +40,17 @@ ALLOWED_HOSTS = ['192.168.3.33']
 # 'sms.nisure.net',
 # ]
 
+#本地
+# PREVIEW_DOMAIN = 'http://localhost:25978/onlinePreview?url=http://192.168.3.33:8000'
 
+#测试服
+PREVIEW_DOMAIN = 'http://ts.filepreview.microservice.nisure.net/onlinePreview?url=http://preview.semsupport.dgo.nisure.net'
+
+#正式服
+#PREVIEW_DOMAIN = 'http://localhost:25978/onlinePreview?url=http://sms.nisure.net'
+
+
+#权限配置
 AUTH_USER_MODEL = 'users.UserProfile'
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
@@ -68,6 +78,7 @@ INSTALLED_APPS = [
     'speechcraft',
     'audio',
     'DjangoUeditor',
+    'trainmaterial',
 ]
 
 MIDDLEWARE = [
