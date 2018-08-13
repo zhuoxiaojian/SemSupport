@@ -7,7 +7,7 @@
 import xadmin
 from trainmaterial.models import Trainmaterial
 class TrainmaterialAdmin(object):
-    list_display = ('train_type', 'train_file', 'train_remark', 'create_time', 'changeTrainFile', )
+    list_display = ('train_type', 'showTrainFile', 'train_remark', 'create_time', 'changeTrainFile', )
     list_filter = ('train_type', )
     search_fields = ('train_type', )
     show_bookmarks = False #屏蔽书签

@@ -19,6 +19,11 @@ class Trainmaterial(models.Model):
     def __str__(self):
         return self.train_type
 
+    def showTrainFile(self):
+        return (self.train_file.name).replace("trainFiles/", "")
+
+    showTrainFile.short_description = '文件名'
+
 
     def changeTrainFile(self):
         return mark_safe('''<script type='text/javascript'>function openFrame'''+str(self.id)+'''(){window.open("'''+PREVIEW_DOMAIN+self.train_file.url+'''");}</script><a class='btn btn-primary' onclick='openFrame'''+str(self.id)+'''();'>预览</a>''')
