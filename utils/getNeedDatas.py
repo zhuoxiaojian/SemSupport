@@ -34,10 +34,10 @@ def get_real_data(user_id, city_name):
     if sem_info_num_str is None:
         sem_info_num_str = str(250)
     sem_info_num = int(sem_info_num_str)
-    date_form = getConstantsVale('dateForm')
-    if date_form is None:
+    date_from = getConstantsVale('dateForm')
+    if date_from is None:
         date_from = '2017-01-01 00:00:00'
-    print('date_form: ', date_form)
+    print('date_from: ', date_from)
     date_to = get_before_oneweek()
     now_time = str(get_today())
     user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
@@ -283,8 +283,8 @@ def get_seo_sale_work(userId):
 #---------------------------------------SEM新分配方法------------------------------------------------------
 #分配SEM销售人员对应的资料
 def divide_sem_slae_work_new():
-    date_form = getConstantsVale('dateForm')
-    if date_form is None:
+    date_from = getConstantsVale('dateForm')
+    if date_from is None:
         date_from = '2017-01-01 00:00:00'
     date_to = get_before_oneweek()
     sem_info_num_str = getConstantsVale('smsNum')

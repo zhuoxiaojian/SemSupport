@@ -26,8 +26,8 @@ def divide_the_work():
     if SalecountNum_str is None:
         SalecountNum_str = 250
     SalecountNum = int(SalecountNum_str)
-    date_form = getConstantsVale('dateForm')
-    if date_form is None:
+    date_from = getConstantsVale('dateForm')
+    if date_from is None:
         date_from = '2017-01-01 00:00:00'
     date_to = get_before_oneweek()
     saleUser = get_sale()
@@ -121,8 +121,8 @@ def update_seo_level():
 @task
 def update_sem_level():
     print("============================SEM：开始更新level标签================================")
-    date_form = getConstantsVale('dateForm')
-    if date_form is None:
+    date_from = getConstantsVale('dateForm')
+    if date_from is None:
         date_from = '2017-01-01 00:00:00'
     date_to = get_before_oneweek()
     SEMInfoNum_str = getConstantsVale('smsNum')
