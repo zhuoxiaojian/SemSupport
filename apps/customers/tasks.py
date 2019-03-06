@@ -79,6 +79,9 @@ def work_one(frcData, saleUser, date_from, date_to, SalecountNum, count):
         if len(s_user_id) > 0:
             for i in s_user_id:
                 result = SalecountNum * (i + count) % frcDataByCityCount
+                new_reslut = result - 1
+                if new_reslut <= 0:
+                    result = 1
                 #print("===============result:"+str(result)+"=============city:"+city)
                 q_randid = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True),
                                                        Q(create_time__range=(date_from, date_to))
@@ -121,6 +124,9 @@ def work_two(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, 
         if len(s_user_id) > 0:
             for i in s_user_id:
                 result = SalecountNum * (i + count) % frcDataByCityCount
+                new_reslut = result - 1
+                if new_reslut <= 0:
+                    result = 1
                 #print("===============result:"+str(result)+"=============city:"+city)
                 q_randid = FormCustomer.objects.filter(Q(city__in=city_list),
                                                        Q(discover_time__range=(date_from_two, date_to_two)),
