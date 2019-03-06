@@ -6,7 +6,7 @@
 # @Software: PyCharm
 import xadmin
 from customers.models import FormCustomer, SEOCustomer
-from utils.getNeedDatas import get_real_data
+from utils.getNeedDatas import get_real_data, get_real_data_two, getHandleCityList
 from utils.getNeedDatas import get_sale_manager_id, get_saleManager_data, get_new_customer_data_to_admin, get_seo_sale_work, get_seo_sale_id, get_sale_id
 import os
 from django.core.files.storage import default_storage
@@ -78,8 +78,13 @@ class FormCustomerAdmin(object):
             else:
                 sale_id_list = get_sale_id()
                 if user_id in sale_id_list:
-                    randid_list = get_real_data(self.user.id, self.user.city.name)
-                    return qs.filter(randid__in=randid_list)
+                    # print(getHandleCityList())
+                    if self.user.city.name in getHandleCityList():
+                        randid_list = get_real_data_two(self.user.id, self.user.city.name)
+                        return qs.filter(randid__in=randid_list)
+                    else:
+                        randid_list = get_real_data(self.user.id, self.user.city.name)
+                        return qs.filter(randid__in=randid_list)
                 else:
                     return qs
 

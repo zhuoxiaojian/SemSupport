@@ -7,13 +7,14 @@
 from django.contrib.auth.models import Group
 from customers.models import FormCustomer, SEOCustomer
 from django.db.models import Q
-from utils.DateFormatUtil import get_before_oneweek, get_today
+from utils.DateFormatUtil import get_before_oneweek, get_today, true_month_handle
 from works.models import customerUser
 from citys.models import FormRegionCity
 from users.models import UserProfile
 from utils.getConstantsUtil import getConstantsVale
 import os
 from django.db.models import Count, Min, Max, Sum
+import datetime
 # seo_info_num = 250
 # sem_info_num = 250
 #获取所有销售人员
@@ -37,14 +38,18 @@ def get_real_data(user_id, city_name):
     date_from = getConstantsVale('dateForm')
     if date_from is None:
         date_from = '2017-01-01 00:00:00'
-    print('date_from: ', date_from)
     date_to = get_before_oneweek()
     now_time = str(get_today())
     user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
     randid_list = []
     if user_work.exists():
         q_randid = user_work[0].customer_id
-        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid), Q(city=city_name) | Q(city__isnull=True), Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True), sem_status=0, aike_status=0).order_by('randid')[0:sem_info_num]
+        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid), Q(city=city_name)
+                                                         | Q(city__isnull=True),
+                                                         Q(create_time__range=(date_from, date_to))
+                                                         | Q(create_time__isnull=True),
+                                                         sem_status=0, aike_status=0
+                                                         ).order_by('randid')[0:sem_info_num]
         # print(q_randid_list_data.query)
         if q_randid_list_data.exists():
             for qd in q_randid_list_data:
@@ -118,7 +123,8 @@ def get_new_customer_data(n):
     new_customer_data_list = []
     date_from = str(get_before_oneweek())
     date_to = str(get_today())
-    q_query = FormCustomer.objects.filter(Q(create_time__range=(date_from, date_to)), sem_status=0, aike_status=0).order_by('randid')
+    q_query = FormCustomer.objects.filter(Q(create_time__range=(date_from, date_to)),
+                                          sem_status=0, aike_status=0).order_by('randid')
     if q_query.exists():
         for qc in q_query:
             new_customer_data_list.append(qc.randid)
@@ -129,7 +135,8 @@ def get_new_customer_data_to_admin():
     new_customer_data_list = []
     date_from = str(get_before_oneweek())
     date_to = str(get_today())
-    q_query = FormCustomer.objects.filter(Q(create_time__range=(date_from, date_to)), sem_status=0, aike_status=0).order_by('randid')
+    q_query = FormCustomer.objects.filter(Q(create_time__range=(date_from, date_to)),
+                                          sem_status=0, aike_status=0).order_by('randid')
     if q_query.exists():
         for qc in q_query:
             new_customer_data_list.append(qc.randid)
@@ -186,7 +193,9 @@ def write_count(count_num):
     f.close()
 
 def get_addup_depart():
-    total_list = FormCustomer.objects.filter(depart__isnull=False).values('depart').annotate(total_amount=Sum('amount'), total_amountNum=Sum('sem_status'), total_business=Sum('business')).order_by()
+    total_list = FormCustomer.objects.filter(depart__isnull=False).values('depart').\
+        annotate(total_amount=Sum('amount'), total_amountNum=Sum('sem_status'),
+                 total_business=Sum('business')).order_by()
     print("==================================")
     print(total_list.query)
     if total_list.exists():
@@ -307,7 +316,8 @@ def divide_sem_slae_work_new():
                 limitNum = num * sem_info_num
                 sem_datas = FormCustomer.objects.filter(Q(sem_status=0),
                                                         Q(aike_status=0),
-                                                        Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
+                                                        Q(create_time__range=(date_from, date_to))
+                                                        | Q(create_time__isnull=True),
                                                         city__icontains=city.name,
                                                         ).values('randid'). order_by('level',
                                                                                      '-randid',
@@ -341,6 +351,51 @@ def get_sem_sale_work_new(userId):
                 rand_id_list.append(rand.get('randid'))
     # print(rand_id_list)
     return rand_id_list
+
+# 获取处理城市list
+def getHandleCityList():
+    handleCityStr = getConstantsVale('handleCity')
+    handleCity = []
+    if handleCityStr is None:
+        handleCity = ['广州', '佛山']
+    else:
+        for handle_city in handleCityStr.split(','):
+            if handle_city:
+                handleCity.append(handle_city)
+    return handleCity
+
+#获取销售对应的资料(广州、佛山)
+def get_real_data_two(user_id, city_name):
+    handleMonth = getConstantsVale('handleMonth')
+    if handleMonth is None:
+        handleMonth = 7
+    date_from_two = str(true_month_handle(datetime.datetime.now(), int(handleMonth)))
+    date_to_two = get_today()
+    date_from = getConstantsVale('dateForm')
+    if date_from is None:
+        date_from = '2017-01-01 00:00:00'
+    date_to = get_today()
+    SalecountNum_two_str = getConstantsVale('smsNewNum')
+    if SalecountNum_two_str is None:
+        SalecountNum_two_str = 250
+    sem_info_num = int(SalecountNum_two_str)
+    now_time = str(get_today())
+    user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
+    randid_list = []
+    city_list = getHandleCityList()
+    if user_work.exists():
+        q_randid = user_work[0].customer_id
+        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid), Q(city__in=city_list),
+                                                         Q(discover_time__range=(date_from_two, date_to_two)),
+                                                         Q(create_time__range=(date_from, date_to)) |
+                                                         Q(create_time__isnull=True),
+                                                         sem_status=0, aike_status=0).order_by('randid')[0:sem_info_num]
+        # print(q_randid_list_data.query)
+        if q_randid_list_data.exists():
+            for qd in q_randid_list_data:
+                randid_list.append(qd.randid)
+    return randid_list
+
 
 
 

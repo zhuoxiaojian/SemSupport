@@ -9,8 +9,8 @@ from utils.getNeedDatas import get_sale, get_seo_sale
 from citys.models import FormRegionCity
 from customers.models import FormCustomer, SEOCustomer
 from django.db.models import Q, F
-from utils.DateFormatUtil import get_today,get_before_oneweek
-from utils.getNeedDatas import get_count,write_count
+from utils.DateFormatUtil import get_today, get_before_oneweek, true_month_handle
+from utils.getNeedDatas import get_count, write_count, getHandleCityList
 from works.models import customerUser
 import time
 import datetime
@@ -32,45 +32,116 @@ def divide_the_work():
     date_to = get_before_oneweek()
     saleUser = get_sale()
     count = int(get_count())
+
+    # -----------------work_two------------------------
+    handleMonth = getConstantsVale('handleMonth')
+    if handleMonth is None:
+        handleMonth = 7
+    date_from_two = str(true_month_handle(datetime.datetime.now(), int(handleMonth)))
+    date_to_two = get_today()
+    SalecountNum_two_str = getConstantsVale('smsNewNum')
+    if SalecountNum_two_str is None:
+        SalecountNum_two_str = 250
+    SalecountNum_two = int(SalecountNum_two_str)
+    # -----------------work_two------------------------
+
+    handleCity = getHandleCityList()
     #根据城市分配
     frcDatas = FormRegionCity.objects.all()
     if frcDatas.exists():
         for frcData in frcDatas:
-            city = frcData.name
-            #将销售人员的id存在list
-            s_user_id = []
-            if saleUser.exists():
-                for s_user in saleUser:
-                    if s_user.city.name == city:
-                        s_user_id.append(s_user.id)
-            #进行复杂的Q对象查询
-            q_query = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True), Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True), sem_status=0, aike_status=0).order_by('randid')
-            # print(q_query.query)
-            if q_query.exists():
-                frcDataByCityCount = q_query.count()
-                if frcDataByCityCount > SalecountNum:
-                    frcDataByCityCount = frcDataByCityCount - SalecountNum
-                if len(s_user_id) > 0:
-                    for i in s_user_id:
-                        result = SalecountNum * (i + count) % frcDataByCityCount
-                        #print("===============result:"+str(result)+"=============city:"+city)
-                        q_randid = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True), Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True), sem_status=0, aike_status=0).order_by('randid')[(result-1):result]
-                        #print(q_randid.query)
-                        if q_randid.exists():
-                            q_randid_id = q_randid[0].randid
-                            create_time_now = str(get_today())
-                            user_id_now = i
-                            query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
-                            #print(query_cc.query)
-                            if query_cc.exists():
-                                query_c = query_cc[0]
-                                id_now = query_c.id
-                                customerUser.objects.filter(id=id_now).update(customer_id=q_randid_id)
-                            else:
-                                customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id, create_time=create_time_now)
-                        # time.sleep(2)
+            if frcData.name in handleCity:
+                work_two(frcData, saleUser, date_from, date_to_two, date_from_two, date_to_two, SalecountNum_two, count)
+            else:
+                work_one(frcData, saleUser, date_from, date_to, SalecountNum, count)
+
     write_count(str(count+1))
     print("==================================任务分配完毕===================================")
+
+# 分配方式1 按照create_time
+def work_one(frcData, saleUser, date_from, date_to, SalecountNum, count):
+    city = frcData.name
+    #将销售人员的id存在list
+    s_user_id = []
+    if saleUser.exists():
+        for s_user in saleUser:
+            if s_user.city.name == city:
+                s_user_id.append(s_user.id)
+    #进行复杂的Q对象查询
+    q_query = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True),
+                                          Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
+                                          sem_status=0, aike_status=0).order_by('randid')
+    # print(q_query.query)
+    if q_query.exists():
+        frcDataByCityCount = q_query.count()
+        if frcDataByCityCount > SalecountNum:
+            frcDataByCityCount = frcDataByCityCount - SalecountNum
+        if len(s_user_id) > 0:
+            for i in s_user_id:
+                result = SalecountNum * (i + count) % frcDataByCityCount
+                #print("===============result:"+str(result)+"=============city:"+city)
+                q_randid = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True),
+                                                       Q(create_time__range=(date_from, date_to))
+                                                       | Q(create_time__isnull=True), sem_status=0,
+                                                       aike_status=0).order_by('randid')[(result-1):result]
+                # print(q_randid.query)
+                if q_randid.exists():
+                    q_randid_id = q_randid[0].randid
+                    create_time_now = str(get_today())
+                    user_id_now = i
+                    query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
+                    #print(query_cc.query)
+                    if query_cc.exists():
+                        query_c = query_cc[0]
+                        id_now = query_c.id
+                        customerUser.objects.filter(id=id_now).update(customer_id=q_randid_id)
+                    else:
+                        customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id, create_time=create_time_now)
+
+# 分配方式2 按照discover_time
+def work_two(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, SalecountNum, count):
+    city = frcData.name
+    city_list = getHandleCityList()
+    #将销售人员的id存在list
+    s_user_id = []
+    if saleUser.exists():
+        for s_user in saleUser:
+            # if s_user.city.name == city:
+            if s_user.city.name in city_list:
+                s_user_id.append(s_user.id)
+    #进行复杂的Q对象查询
+    q_query = FormCustomer.objects.filter(Q(city__in=city_list), Q(discover_time__range=(date_from_two, date_to_two)),
+                                          Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
+                                          sem_status=0, aike_status=0).order_by('randid')
+    # print(q_query.query)
+    if q_query.exists():
+        frcDataByCityCount = q_query.count()
+        if frcDataByCityCount > SalecountNum:
+            frcDataByCityCount = frcDataByCityCount - SalecountNum
+        if len(s_user_id) > 0:
+            for i in s_user_id:
+                result = SalecountNum * (i + count) % frcDataByCityCount
+                #print("===============result:"+str(result)+"=============city:"+city)
+                q_randid = FormCustomer.objects.filter(Q(city__in=city_list),
+                                                       Q(discover_time__range=(date_from_two, date_to_two)),
+                                                       Q(create_time__range=(date_from, date_to)) |
+                                                       Q(create_time__isnull=True),
+                                                       sem_status=0, aike_status=0
+                                                       ).order_by('randid')[(result-1):result]
+                # print(q_randid.query)
+                if q_randid.exists():
+                    q_randid_id = q_randid[0].randid
+                    create_time_now = str(get_today())
+                    user_id_now = i
+                    query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
+                    #print(query_cc.query)
+                    if query_cc.exists():
+                        query_c = query_cc[0]
+                        id_now = query_c.id
+                        customerUser.objects.filter(id=id_now).update(customer_id=q_randid_id)
+                    else:
+                        customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id,
+                                                    create_time=create_time_now)
 
 
 
@@ -159,6 +230,7 @@ def update_sem_level():
                                 u_l.update_time = datetime.datetime.now()
                                 u_l.save()
     print("============================更新SEM的level标签结束================================")
+
 
 
 
