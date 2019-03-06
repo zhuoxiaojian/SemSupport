@@ -37,6 +37,7 @@ def get_real_data(user_id, city_name):
     date_form = getConstantsVale('dateForm')
     if date_form is None:
         date_from = '2017-01-01 00:00:00'
+    print('date_form: ', date_form)
     date_to = get_before_oneweek()
     now_time = str(get_today())
     user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
