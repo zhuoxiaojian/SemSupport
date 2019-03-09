@@ -53,8 +53,14 @@ def true_month_handle(datetime_now, num):
     day = strArrays[2].split(' ')[0]
     return year_month + '-' + day
 
+def get_before_oneweek_yes():
+    today = get_yesterday()
+    oneday = datetime.timedelta(days=6)
+    oneweek = today - oneday
+    return oneweek
 
 if __name__ == '__main__':
     print(get_before_oneweek())
-    print(true_month_handle(datetime.datetime.now(), 7))
+    print(true_month_handle(get_today(), 7))
     print(get_today())
+    print(get_before_oneweek_yes())
