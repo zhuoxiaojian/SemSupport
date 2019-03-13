@@ -16,6 +16,8 @@ from utils.readExcelUtil import read_excel, read_read_excel_seo
 from customers.models import FormCustomerImport, NewFormCustomer, SuccessCustomer, SeoSaleWork
 from xadmin.layout import Main, Fieldset, Row, Side
 from django.utils.translation import ugettext as _
+from works.tasks import back_up_work
+
 #公司信息
 class FormCustomerAdmin(object):
 
@@ -81,10 +83,14 @@ class FormCustomerAdmin(object):
                     # print(getHandleCityList())
                     if self.user.city.name in getHandleCityList():
                         randid_list = get_real_data_two(self.user.id, self.user.city.name)
-                        return qs.filter(randid__in=randid_list)
+                        result_work = qs.filter(randid__in=randid_list)
+                        back_up_work.delay(user_id, user_name, str(result_work.query))
+                        return result_work
                     else:
                         randid_list = get_real_data(self.user.id, self.user.city.name)
-                        return qs.filter(randid__in=randid_list)
+                        result_work = qs.filter(randid__in=randid_list)
+                        back_up_work.delay(user_id, user_name, str(result_work.query))
+                        return result_work
                 else:
                     return qs
 
