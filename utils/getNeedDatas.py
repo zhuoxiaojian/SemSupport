@@ -15,6 +15,7 @@ from utils.getConstantsUtil import getConstantsVale
 import os
 from django.db.models import Count, Min, Max, Sum
 import datetime
+from works.models import BackUpWork
 # seo_info_num = 250
 # sem_info_num = 250
 #获取所有销售人员
@@ -30,31 +31,17 @@ def get_sale():
     return users
 
 # 获取昨天的数据，防止与昨天重复
-def getYesterdayRandIdList_one(user_id, city_name):
-    sem_info_num_str = getConstantsVale('smsNum')
-    if sem_info_num_str is None:
-        sem_info_num_str = str(250)
-    sem_info_num = int(sem_info_num_str)
-    date_from = getConstantsVale('dateForm')
-    if date_from is None:
-        date_from = '2017-01-01 00:00:00'
-    date_to = get_before_oneweek_yes()
-    now_time = str(get_yesterday())
-    user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
+def getYesterdayRandIdList_one(user_id):
+    create_time = str(get_yesterday())
+    BW = BackUpWork.objects.filter(user_id=user_id, create_time=create_time)
     randid_list = []
-    if user_work.exists():
-        q_randid = user_work[0].customer_id
-        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
-                                                         Q(city=city_name)
-                                                         | Q(city__isnull=True),
-                                                         Q(create_time__range=(date_from, date_to))
-                                                         | Q(create_time__isnull=True),
-                                                         sem_status=0, aike_status=0
-                                                         ).order_by('randid')[0:sem_info_num]
-        # print(q_randid_list_data.query)
-        if q_randid_list_data.exists():
-            for qd in q_randid_list_data:
-                randid_list.append(qd.randid)
+    if BW.exists():
+        bw = BW[0]
+        yy = FormCustomer.objects.raw(bw.sql_str)
+        for y in yy:
+            randid_list.append(y.randid)
+    else:
+        randid_list.append(999999)
     return randid_list
 
 
@@ -70,7 +57,7 @@ def get_real_data(user_id, city_name):
     date_to = get_before_oneweek()
     now_time = str(get_today())
     user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
-    randid_list_yes = getYesterdayRandIdList_one(user_id, city_name)
+    randid_list_yes = getYesterdayRandIdList_one(user_id)
     randid_list = []
     if user_work.exists():
         q_randid = user_work[0].customer_id
@@ -399,34 +386,16 @@ def getHandleCityList():
 
 # 获取广州佛山销售昨天的资料
 def getYesterdayRandIdList_two(user_id):
-    handleMonth = getConstantsVale('handleMonth')
-    if handleMonth is None:
-        handleMonth = 7
-    date_from_two = str(true_month_handle(get_yesterday(), int(handleMonth)))
-    date_to_two = get_yesterday()
-    date_from = getConstantsVale('dateForm')
-    if date_from is None:
-        date_from = '2017-01-01 00:00:00'
-    date_to = get_yesterday()
-    SalecountNum_two_str = getConstantsVale('smsNewNum')
-    if SalecountNum_two_str is None:
-        SalecountNum_two_str = 250
-    sem_info_num = int(SalecountNum_two_str)
-    now_time = str(get_yesterday())
-    user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
+    create_time = str(get_yesterday())
+    BW = BackUpWork.objects.filter(user_id=user_id, create_time=create_time)
     randid_list = []
-    city_list = getHandleCityList()
-    if user_work.exists():
-        q_randid = user_work[0].customer_id
-        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid), Q(city__in=city_list),
-                                                         Q(discover_time__range=(date_from_two, date_to_two)),
-                                                         Q(create_time__range=(date_from, date_to)) |
-                                                         Q(create_time__isnull=True),
-                                                         sem_status=0, aike_status=0).order_by('randid')[0:sem_info_num]
-        # print(q_randid_list_data.query)
-        if q_randid_list_data.exists():
-            for qd in q_randid_list_data:
-                randid_list.append(qd.randid)
+    if BW.exists():
+        bw = BW[0]
+        yy = FormCustomer.objects.raw(bw.sql_str)
+        for y in yy:
+            randid_list.append(y.randid)
+    else:
+        randid_list.append(999999)
     return randid_list
 
 
