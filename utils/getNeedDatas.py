@@ -47,33 +47,43 @@ def getYesterdayRandIdList_one(user_id):
 
 #获取销售对应的资料
 def get_real_data(user_id, city_name):
-    sem_info_num_str = getConstantsVale('smsNum')
-    if sem_info_num_str is None:
-        sem_info_num_str = str(250)
-    sem_info_num = int(sem_info_num_str)
-    date_from = getConstantsVale('dateForm')
-    if date_from is None:
-        date_from = '2017-01-01 00:00:00'
-    date_to = get_before_oneweek()
-    now_time = str(get_today())
-    user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
-    randid_list_yes = getYesterdayRandIdList_one(user_id)
-    randid_list = []
-    if user_work.exists():
-        q_randid = user_work[0].customer_id
-        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
-                                                         ~Q(randid__in=randid_list_yes),
-                                                         Q(city=city_name)
-                                                         | Q(city__isnull=True),
-                                                         Q(create_time__range=(date_from, date_to))
-                                                         | Q(create_time__isnull=True),
-                                                         sem_status=0, aike_status=0
-                                                         ).order_by('randid')[0:sem_info_num]
-        # print(q_randid_list_data.query)
-        if q_randid_list_data.exists():
-            for qd in q_randid_list_data:
-                randid_list.append(qd.randid)
-    return randid_list
+    check_time = str(get_today())
+    BW = BackUpWork.objects.filter(user_id=user_id, create_time=check_time)
+    if BW.exists():
+        randid_list = []
+        bw = BW[0]
+        yy = FormCustomer.objects.raw(bw.sql_str)
+        for y in yy:
+            randid_list.append(y.randid)
+        return randid_list
+    else:
+        sem_info_num_str = getConstantsVale('smsNum')
+        if sem_info_num_str is None:
+            sem_info_num_str = str(250)
+        sem_info_num = int(sem_info_num_str)
+        date_from = getConstantsVale('dateForm')
+        if date_from is None:
+            date_from = '2017-01-01 00:00:00'
+        date_to = get_before_oneweek()
+        now_time = str(get_today())
+        user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
+        randid_list_yes = getYesterdayRandIdList_one(user_id)
+        randid_list = []
+        if user_work.exists():
+            q_randid = user_work[0].customer_id
+            q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
+                                                             ~Q(randid__in=randid_list_yes),
+                                                             Q(city=city_name)
+                                                             | Q(city__isnull=True),
+                                                             Q(create_time__range=(date_from, date_to))
+                                                             | Q(create_time__isnull=True),
+                                                             sem_status=0, aike_status=0
+                                                             ).order_by('randid')[0:sem_info_num]
+            # print(q_randid_list_data.query)
+            if q_randid_list_data.exists():
+                for qd in q_randid_list_data:
+                    randid_list.append(qd.randid)
+        return randid_list
 
 
 #获取所有的销售经理
@@ -402,38 +412,48 @@ def getYesterdayRandIdList_two(user_id):
 
 #获取销售对应的资料(广州、佛山)
 def get_real_data_two(user_id, city_name):
-    handleMonth = getConstantsVale('handleMonth')
-    if handleMonth is None:
-        handleMonth = 7
-    date_from_two = str(true_month_handle(datetime.datetime.now(), int(handleMonth)))
-    date_to_two = get_today()
-    date_from = getConstantsVale('dateForm')
-    if date_from is None:
-        date_from = '2017-01-01 00:00:00'
-    date_to = get_today()
-    SalecountNum_two_str = getConstantsVale('smsNewNum')
-    if SalecountNum_two_str is None:
-        SalecountNum_two_str = 250
-    sem_info_num = int(SalecountNum_two_str)
-    now_time = str(get_today())
-    user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
-    randid_list = []
-    city_list = getHandleCityList()
-    yesterdayRandIdList_two = getYesterdayRandIdList_two(user_id)
-    if user_work.exists():
-        q_randid = user_work[0].customer_id
-        q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
-                                                         ~Q(randid__in=yesterdayRandIdList_two),
-                                                         Q(city__in=city_list),
-                                                         Q(discover_time__range=(date_from_two, date_to_two)),
-                                                         Q(create_time__range=(date_from, date_to)) |
-                                                         Q(create_time__isnull=True),
-                                                         sem_status=0, aike_status=0).order_by('randid')[0:sem_info_num]
-        # print(q_randid_list_data.query)
-        if q_randid_list_data.exists():
-            for qd in q_randid_list_data:
-                randid_list.append(qd.randid)
-    return randid_list
+    check_time = str(get_today())
+    BW = BackUpWork.objects.filter(user_id=user_id, create_time=check_time)
+    if BW.exists():
+        randid_list = []
+        bw = BW[0]
+        yy = FormCustomer.objects.raw(bw.sql_str)
+        for y in yy:
+            randid_list.append(y.randid)
+        return randid_list
+    else:
+        handleMonth = getConstantsVale('handleMonth')
+        if handleMonth is None:
+            handleMonth = 7
+        date_from_two = str(true_month_handle(datetime.datetime.now(), int(handleMonth)))
+        date_to_two = get_today()
+        date_from = getConstantsVale('dateForm')
+        if date_from is None:
+            date_from = '2017-01-01 00:00:00'
+        date_to = get_today()
+        SalecountNum_two_str = getConstantsVale('smsNewNum')
+        if SalecountNum_two_str is None:
+            SalecountNum_two_str = 250
+        sem_info_num = int(SalecountNum_two_str)
+        now_time = str(get_today())
+        user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
+        randid_list = []
+        city_list = getHandleCityList()
+        yesterdayRandIdList_two = getYesterdayRandIdList_two(user_id)
+        if user_work.exists():
+            q_randid = user_work[0].customer_id
+            q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
+                                                             ~Q(randid__in=yesterdayRandIdList_two),
+                                                             Q(city__in=city_list),
+                                                             Q(discover_time__range=(date_from_two, date_to_two)),
+                                                             Q(create_time__range=(date_from, date_to)) |
+                                                             Q(create_time__isnull=True),
+                                                             sem_status=0, aike_status=0).order_by('randid')[0:sem_info_num]
+            # print(q_randid_list_data.query)
+            if q_randid_list_data.exists():
+                for qd in q_randid_list_data:
+                    randid_list.append(qd.randid)
+        return randid_list
 
 
 
