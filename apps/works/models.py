@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.safestring import mark_safe
 # Create your models here.
 from users.models import UserProfile
 class customerUser(models.Model):
@@ -41,3 +41,37 @@ class BackUpWork(models.Model):
     def __str__(self):
         return str(self.user_id)
 
+
+
+class BackUpWorkRepeat(BackUpWork):
+
+    class Meta:
+        verbose_name = '查看重复'
+        verbose_name_plural = verbose_name
+        proxy = True
+        ordering = ['-create_time']
+
+    def __str__(self):
+        return str(self.user_id)
+
+
+    def repeat_count(self):
+        from utils.DateFormatUtil import get_yesterday, get_today
+        from customers.models import FormCustomer
+        yesB = BackUpWork.objects.filter(create_time=str(get_yesterday()), user_id=self.user_id)
+        toB = BackUpWork.objects.filter(create_time=str(get_today()), user_id=self.user_id)
+        if yesB.exists() and toB.exists():
+            y = yesB[0]
+            t = toB[0]
+            yy = FormCustomer.objects.raw(y.sql_str)
+            tt = FormCustomer.objects.raw(t.sql_str)
+            list_company = []
+            for y in yy:
+                list_company.append(y.company_name)
+            for t in tt:
+                list_company.append(t.company_name)
+            set_company = set(list_company)
+            repeat_count = len(list_company) - len(set_company)
+            return repeat_count
+        return 0
+    repeat_count.short_description = '重复总数'
