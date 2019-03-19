@@ -29,7 +29,7 @@ def divide_the_work():
     date_from = getConstantsVale('dateForm')
     if date_from is None:
         date_from = '2017-01-01 00:00:00'
-    date_to = get_before_oneweek()
+    # date_to = get_before_oneweek()
     saleUser = get_sale()
     count = int(get_count())
 
@@ -53,13 +53,13 @@ def divide_the_work():
             if frcData.name in handleCity:
                 work_two(frcData, saleUser, date_from, date_to_two, date_from_two, date_to_two, SalecountNum_two, count)
             else:
-                work_one(frcData, saleUser, date_from, date_to, SalecountNum, count)
+                work_one(frcData, saleUser, date_from, date_to_two, date_from_two, date_to_two, SalecountNum, count)
 
     write_count(str(count+1))
     print("==================================任务分配完毕===================================")
 
-# 分配方式1 按照create_time
-def work_one(frcData, saleUser, date_from, date_to, SalecountNum, count):
+# 分配方式1 按照discover_time 深圳
+def work_one(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, SalecountNum, count):
     city = frcData.name
     #将销售人员的id存在list
     s_user_id = []
@@ -68,7 +68,7 @@ def work_one(frcData, saleUser, date_from, date_to, SalecountNum, count):
             if s_user.city.name == city:
                 s_user_id.append(s_user.id)
     #进行复杂的Q对象查询
-    q_query = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True),
+    q_query = FormCustomer.objects.filter(Q(city=city), Q(discover_time__range=(date_from_two, date_to_two)),
                                           Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
                                           sem_status=0, aike_status=0).order_by('randid')
     # print(q_query.query)
@@ -82,11 +82,12 @@ def work_one(frcData, saleUser, date_from, date_to, SalecountNum, count):
                 new_reslut = result - 1
                 if new_reslut <= 0:
                     result = 1
-                #print("===============result:"+str(result)+"=============city:"+city)
-                q_randid = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True),
-                                                       Q(create_time__range=(date_from, date_to))
-                                                       | Q(create_time__isnull=True), sem_status=0,
-                                                       aike_status=0).order_by('randid')[(result-1):result]
+                q_randid = FormCustomer.objects.filter(Q(city=city),
+                                                       Q(discover_time__range=(date_from_two, date_to_two)),
+                                                       Q(create_time__range=(date_from, date_to)) |
+                                                       Q(create_time__isnull=True),
+                                                       sem_status=0, aike_status=0
+                                                       ).order_by('randid')[(result-1):result]
                 # print(q_randid.query)
                 if q_randid.exists():
                     q_randid_id = q_randid[0].randid
@@ -99,7 +100,51 @@ def work_one(frcData, saleUser, date_from, date_to, SalecountNum, count):
                         id_now = query_c.id
                         customerUser.objects.filter(id=id_now).update(customer_id=q_randid_id)
                     else:
-                        customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id, create_time=create_time_now)
+                        customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id,
+                                                    create_time=create_time_now)
+
+# 分配方式1 按照create_time
+# def work_one(frcData, saleUser, date_from, date_to, SalecountNum, count):
+#     city = frcData.name
+#     #将销售人员的id存在list
+#     s_user_id = []
+#     if saleUser.exists():
+#         for s_user in saleUser:
+#             if s_user.city.name == city:
+#                 s_user_id.append(s_user.id)
+#     #进行复杂的Q对象查询
+#     q_query = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True),
+#                                           Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
+#                                           sem_status=0, aike_status=0).order_by('randid')
+#     # print(q_query.query)
+#     if q_query.exists():
+#         frcDataByCityCount = q_query.count()
+#         if frcDataByCityCount > SalecountNum:
+#             frcDataByCityCount = frcDataByCityCount - SalecountNum
+#         if len(s_user_id) > 0:
+#             for i in s_user_id:
+#                 result = SalecountNum * (i + count) % frcDataByCityCount
+#                 new_reslut = result - 1
+#                 if new_reslut <= 0:
+#                     result = 1
+#                 #print("===============result:"+str(result)+"=============city:"+city)
+#                 q_randid = FormCustomer.objects.filter(Q(city=frcData.name) | Q(city__isnull=True),
+#                                                        Q(create_time__range=(date_from, date_to))
+#                                                        | Q(create_time__isnull=True), sem_status=0,
+#                                                        aike_status=0).order_by('randid')[(result-1):result]
+#                 # print(q_randid.query)
+#                 if q_randid.exists():
+#                     q_randid_id = q_randid[0].randid
+#                     create_time_now = str(get_today())
+#                     user_id_now = i
+#                     query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
+#                     #print(query_cc.query)
+#                     if query_cc.exists():
+#                         query_c = query_cc[0]
+#                         id_now = query_c.id
+#                         customerUser.objects.filter(id=id_now).update(customer_id=q_randid_id)
+#                     else:
+#                         customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id, create_time=create_time_now)
 
 # 分配方式2 按照discover_time
 def work_two(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, SalecountNum, count):

@@ -61,10 +61,15 @@ def get_real_data(user_id, city_name):
         if sem_info_num_str is None:
             sem_info_num_str = str(250)
         sem_info_num = int(sem_info_num_str)
+        handleMonth = getConstantsVale('handleMonth')
+        if handleMonth is None:
+            handleMonth = 7
+        date_from_two = str(true_month_handle(datetime.datetime.now(), int(handleMonth)))
+        date_to_two = get_today()
         date_from = getConstantsVale('dateForm')
         if date_from is None:
             date_from = '2017-01-01 00:00:00'
-        date_to = get_before_oneweek()
+        date_to = get_today()
         now_time = str(get_today())
         user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
         randid_list_yes = getYesterdayRandIdList_one(user_id)
@@ -73,10 +78,10 @@ def get_real_data(user_id, city_name):
             q_randid = user_work[0].customer_id
             q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
                                                              ~Q(randid__in=randid_list_yes),
-                                                             Q(city=city_name)
-                                                             | Q(city__isnull=True),
-                                                             Q(create_time__range=(date_from, date_to))
-                                                             | Q(create_time__isnull=True),
+                                                             Q(city=city_name),
+                                                             Q(discover_time__range=(date_from_two, date_to_two)),
+                                                             Q(create_time__range=(date_from, date_to)) |
+                                                             Q(create_time__isnull=True),
                                                              sem_status=0, aike_status=0
                                                              ).order_by('randid')[0:sem_info_num]
             # print(q_randid_list_data.query)

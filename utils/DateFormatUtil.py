@@ -59,8 +59,15 @@ def get_before_oneweek_yes():
     oneweek = today - oneday
     return oneweek
 
+def get_before_day(dayNum):
+    today = datetime.date.today()
+    oneday = datetime.timedelta(days=dayNum)
+    before_day = today - oneday
+    return before_day
+
 if __name__ == '__main__':
     print(get_before_oneweek())
     print(true_month_handle(get_today(), 7))
     print(get_today())
     print(get_before_oneweek_yes())
+    print(get_before_day(2))
