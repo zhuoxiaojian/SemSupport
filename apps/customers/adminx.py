@@ -43,7 +43,7 @@ class FormCustomerAdmin(object):
                              'qq', 'wechat', 'phone', 'address',
                              ),
                     Fieldset(_('意向信息'),
-                            'sem_status', 'aike_status',
+                             'sem_status', 'aike_status',
                              ),
                     Fieldset(_('签单信息'),
                              'depart', 'sales', 'amount', 'business',
@@ -84,17 +84,20 @@ class FormCustomerAdmin(object):
                     if self.user.city.name in getHandleCityList():
                         randid_list = get_real_data_two(self.user.id, self.user.city.name)
                         result_work = qs.filter(randid__in=randid_list)
-                        back_up_work.delay(user_id, user_name, str(result_work.query))
+                        if result_work.exists():
+                            back_up_work.delay(user_id, user_name, str(result_work.query))
                         return result_work
                     elif self.user.city.name == '远程':
                         randid_list = get_real_data_three(self.user.id, self.user.city.name)
                         result_work = qs.filter(randid__in=randid_list)
-                        back_up_work.delay(user_id, user_name, str(result_work.query))
+                        if result_work.exists():
+                            back_up_work.delay(user_id, user_name, str(result_work.query))
                         return result_work
                     else:
                         randid_list = get_real_data(self.user.id, self.user.city.name)
                         result_work = qs.filter(randid__in=randid_list)
-                        back_up_work.delay(user_id, user_name, str(result_work.query))
+                        if result_work.exists():
+                            back_up_work.delay(user_id, user_name, str(result_work.query))
                         return result_work
                 else:
                     return qs
