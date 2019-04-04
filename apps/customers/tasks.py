@@ -10,7 +10,7 @@ from citys.models import FormRegionCity
 from customers.models import FormCustomer, SEOCustomer
 from django.db.models import Q, F
 from utils.DateFormatUtil import get_today, get_before_oneweek, true_month_handle
-from utils.getNeedDatas import get_count, write_count, getHandleCityList
+from utils.getNeedDatas import get_count, write_count, getHandleCityList, getFilterCityList
 from works.models import customerUser
 import time
 import datetime
@@ -43,15 +43,23 @@ def divide_the_work():
     if SalecountNum_two_str is None:
         SalecountNum_two_str = 250
     SalecountNum_two = int(SalecountNum_two_str)
+
+    SalecountNum_three_str = getConstantsVale('smsRemoteNum')
+    if SalecountNum_three_str is None:
+        SalecountNum_three_str = 250
+    SalecountNum_three = int(SalecountNum_three_str)
     # -----------------work_two------------------------
 
     handleCity = getHandleCityList()
+    filterCity = getFilterCityList()
     #根据城市分配
     frcDatas = FormRegionCity.objects.all()
     if frcDatas.exists():
         for frcData in frcDatas:
             if frcData.name in handleCity:
                 work_two(frcData, saleUser, date_from, date_to_two, date_from_two, date_to_two, SalecountNum_two, count)
+            elif frcData.name == '远程':
+                work_three(filterCity, saleUser, date_from, date_to_two, date_from_two, date_to_two, SalecountNum_three, count)
             else:
                 work_one(frcData, saleUser, date_from, date_to_two, date_from_two, date_to_two, SalecountNum, count)
 
@@ -194,7 +202,49 @@ def work_two(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, 
                         customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id,
                                                     create_time=create_time_now)
 
-
+# 分配方式3 除去广州，佛山，深圳的资料
+def work_three(filterCity, saleUser, date_from, date_to, date_from_two, date_to_two, SalecountNum, count):
+    #将销售人员的id存在list
+    s_user_id = []
+    if saleUser.exists():
+        for s_user in saleUser:
+            if s_user.city.name == '远程':
+                s_user_id.append(s_user.id)
+    #进行复杂的Q对象查询
+    q_query = FormCustomer.objects.filter(~Q(city__in=filterCity), Q(discover_time__range=(date_from_two, date_to_two)),
+                                          Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
+                                          sem_status=0, aike_status=0).order_by('randid')
+    # print(q_query.query)
+    if q_query.exists():
+        frcDataByCityCount = q_query.count()
+        if frcDataByCityCount > SalecountNum:
+            frcDataByCityCount = frcDataByCityCount - SalecountNum
+        if len(s_user_id) > 0:
+            for i in s_user_id:
+                result = SalecountNum * (i + count) % frcDataByCityCount
+                new_reslut = result - 1
+                if new_reslut <= 0:
+                    result = 1
+                q_randid = FormCustomer.objects.filter(~Q(city__in=filterCity),
+                                                       Q(discover_time__range=(date_from_two, date_to_two)),
+                                                       Q(create_time__range=(date_from, date_to)) |
+                                                       Q(create_time__isnull=True),
+                                                       sem_status=0, aike_status=0
+                                                       ).order_by('randid')[(result-1):result]
+                # print(q_randid.query)
+                if q_randid.exists():
+                    q_randid_id = q_randid[0].randid
+                    create_time_now = str(get_today())
+                    user_id_now = i
+                    query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
+                    #print(query_cc.query)
+                    if query_cc.exists():
+                        query_c = query_cc[0]
+                        id_now = query_c.id
+                        customerUser.objects.filter(id=id_now).update(customer_id=q_randid_id)
+                    else:
+                        customerUser.objects.create(user_id=user_id_now, customer_id=q_randid_id,
+                                                    create_time=create_time_now)
 
 #定时更新已分配的SEO资料的level（轮换数）
 @task

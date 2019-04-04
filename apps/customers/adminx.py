@@ -6,7 +6,7 @@
 # @Software: PyCharm
 import xadmin
 from customers.models import FormCustomer, SEOCustomer
-from utils.getNeedDatas import get_real_data, get_real_data_two, getHandleCityList
+from utils.getNeedDatas import get_real_data, get_real_data_two, getHandleCityList, getFilterCityList, get_real_data_three
 from utils.getNeedDatas import get_sale_manager_id, get_saleManager_data, get_new_customer_data_to_admin, get_seo_sale_work, get_seo_sale_id, get_sale_id
 import os
 from django.core.files.storage import default_storage
@@ -83,6 +83,11 @@ class FormCustomerAdmin(object):
                     # print(getHandleCityList())
                     if self.user.city.name in getHandleCityList():
                         randid_list = get_real_data_two(self.user.id, self.user.city.name)
+                        result_work = qs.filter(randid__in=randid_list)
+                        back_up_work.delay(user_id, user_name, str(result_work.query))
+                        return result_work
+                    elif self.user.city.name == '远程':
+                        randid_list = get_real_data_three(self.user.id, self.user.city.name)
                         result_work = qs.filter(randid__in=randid_list)
                         back_up_work.delay(user_id, user_name, str(result_work.query))
                         return result_work
