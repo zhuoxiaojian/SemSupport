@@ -7,7 +7,7 @@
 from django.contrib.auth.models import Group
 from customers.models import FormCustomer, SEOCustomer
 from django.db.models import Q
-from utils.DateFormatUtil import get_before_oneweek, get_today, true_month_handle, get_yesterday, get_before_oneweek_yes
+from utils.DateFormatUtil import get_before_oneweek, get_today, true_month_handle, get_yesterday, get_before_oneweek_yes, get_more_day_before
 from works.models import customerUser
 from citys.models import FormRegionCity
 from users.models import UserProfile
@@ -30,16 +30,27 @@ def get_sale():
     users = group.user_set.all()
     return users
 
-# 获取昨天的数据，防止与昨天重复
-def getYesterdayRandIdList_one(user_id):
-    create_time = str(get_yesterday())
-    BW = BackUpWork.objects.filter(user_id=user_id, create_time=create_time)
+# 获取几天前的数据，防止与几天前重复
+def getYesterdayRandIdList(user_id):
+    dayNum = getConstantsVale('dayNum')
+    if dayNum is None:
+        dayNum = str(1)
+    day_list = get_more_day_before(dayNum=int(dayNum))
+    q = Q()
+    q.connector = 'OR'
+    for day in day_list:
+        q.children.append(('create_time', str(day)))
+    # create_time = str(get_yesterday())
+    # BW = BackUpWork.objects.filter(user_id=user_id, create_time=create_time)
+    BW = BackUpWork.objects.filter(q, user_id=user_id)
+    # print(BW.query)
     randid_list = []
     if BW.exists():
-        bw = BW[0]
-        yy = FormCustomer.objects.raw(bw.sql_str)
-        for y in yy:
-            randid_list.append(y.randid)
+        # bw = BW[0]
+        for bw in BW:
+            yy = FormCustomer.objects.raw(bw.sql_str)
+            for y in yy:
+                randid_list.append(y.randid)
     else:
         randid_list.append(999999)
     return randid_list
@@ -72,7 +83,7 @@ def get_real_data(user_id, city_name):
         date_to = get_today()
         now_time = str(get_today())
         user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
-        randid_list_yes = getYesterdayRandIdList_one(user_id)
+        randid_list_yes = getYesterdayRandIdList(user_id)
         randid_list = []
         if user_work.exists():
             q_randid = user_work[0].customer_id
@@ -410,22 +421,6 @@ def getFilterCityList():
                 filterCity.append(filter_city)
     return filterCity
 
-# 获取广州佛山销售昨天的资料
-def getYesterdayRandIdList_two(user_id):
-    create_time = str(get_yesterday())
-    BW = BackUpWork.objects.filter(user_id=user_id, create_time=create_time)
-    randid_list = []
-    if BW.exists():
-        bw = BW[0]
-        yy = FormCustomer.objects.raw(bw.sql_str)
-        for y in yy:
-            randid_list.append(y.randid)
-    else:
-        randid_list.append(999999)
-    return randid_list
-
-
-
 #获取销售对应的资料(广州、佛山)
 def get_real_data_two(user_id, city_name):
     check_time = str(get_today())
@@ -455,7 +450,7 @@ def get_real_data_two(user_id, city_name):
         user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
         randid_list = []
         city_list = getHandleCityList()
-        yesterdayRandIdList_two = getYesterdayRandIdList_two(user_id)
+        yesterdayRandIdList_two = getYesterdayRandIdList(user_id)
         if user_work.exists():
             q_randid = user_work[0].customer_id
             q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
@@ -500,7 +495,7 @@ def get_real_data_three(user_id, city_name):
         user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
         randid_list = []
         city_list = getFilterCityList()
-        yesterdayRandIdList_two = getYesterdayRandIdList_two(user_id)
+        yesterdayRandIdList_two = getYesterdayRandIdList(user_id)
         if user_work.exists():
             q_randid = user_work[0].customer_id
             q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),

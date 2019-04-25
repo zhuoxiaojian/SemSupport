@@ -135,10 +135,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'SemSupport',
-        'HOST': 'testdb.nisure.net',
+        'HOST': 'tsdb.remotemanager.nisure.net',
         'PORT': 22701,
-        'USER': 'testdb_sms',
-        'PASSWORD': 'j7F7hr6a9cvnngaeee72q9zg2spfoetN'
+        'USER': 'tsdb_manager',
+        'PASSWORD': 'p6ag1lhnb2cf3gqvd4Xlu90x9Kutcqjb'
     }
 }
 
