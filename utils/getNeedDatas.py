@@ -510,24 +510,3 @@ def get_real_data_three(user_id, city_name):
                 for qd in q_randid_list_data:
                     randid_list.append(qd.randid)
         return randid_list
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
