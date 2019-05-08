@@ -39,8 +39,8 @@ CELERYBEAT_SCHEDULE={
     },
     'init_work_data': {
         'task': 'customers.tasks.divide_the_work',
-        'schedule': timedelta(seconds=60)
-        # 'schedule': crontab(minute=u'10,20,30', hour=u'17',),
+#         'schedule': timedelta(seconds=60)
+        'schedule': crontab(minute=u'10,20,30', hour=u'17',),
 #         'schedule': crontab(minute=u'55', hour=u'16',),
     },
     'update_seo_level': {
