@@ -34,6 +34,7 @@ class FormCustomer(models.Model):
     level = models.IntegerField(verbose_name='轮换次数', default=0, null=False, blank=False)
     discover_time = models.DateTimeField(verbose_name='最近发现时间', null=True, blank=True)
     discover_count = models.IntegerField(verbose_name='发现次数', default=1, null=False, blank=False)
+    source = models.CharField(max_length=255, verbose_name='终端来源', default='PC', null=False, blank=False)
 
     class Meta:
         db_table = 'form_customer'
@@ -50,14 +51,18 @@ class FormCustomer(models.Model):
 
     def change_url(self):
         # change_url.short_description = "公司域名"
-
+        show_url = None
+        if self.url:
+            show_url = self.url.split('?')[0]
+        else:
+            show_url = self.url
         if self.url.__contains__('https:'):
-            return mark_safe('<a href = "'+self.url+'" target="_blank" onclick="handleClick'+str(self.id)+'();">'+self.url+'</a><script type="text/javascript">function handleClick'+str(self.id)+'(){$.ajax({url:"formCustomerHandle", data:{url:"'+self.url+'",action:"handleUrl"},type:"GET",dataType:"json",success:function(returned, status, xhr){console.log(status);}});}</script>')
+            return mark_safe('<a href = "'+self.url+'" target="_blank" onclick="handleClick'+str(self.id)+'();">'+show_url+'</a><script type="text/javascript">function handleClick'+str(self.id)+'(){$.ajax({url:"formCustomerHandle", data:{url:"'+self.url+'",action:"handleUrl"},type:"GET",dataType:"json",success:function(returned, status, xhr){console.log(status);}});}</script>')
         else:
             if self.url.__contains__('http:'):
-                return mark_safe('<a href = "'+self.url+'" target="_blank" onclick="handleClick'+str(self.id)+'();">'+self.url+'</a><script type="text/javascript">function handleClick'+str(self.id)+'(){$.ajax({url:"formCustomerHandle", data:{url:"'+self.url+'",action:"handleUrl"},type:"GET",dataType:"json",success:function(returned, status, xhr){console.log(status);}});}</script>')
+                return mark_safe('<a href = "'+self.url+'" target="_blank" onclick="handleClick'+str(self.id)+'();">'+show_url+'</a><script type="text/javascript">function handleClick'+str(self.id)+'(){$.ajax({url:"formCustomerHandle", data:{url:"'+self.url+'",action:"handleUrl"},type:"GET",dataType:"json",success:function(returned, status, xhr){console.log(status);}});}</script>')
             else:
-                return mark_safe('<a href = "http://'+self.url+'" target="_blank" onclick="handleClick'+str(self.id)+'();">'+self.url+'</a><script type="text/javascript">function handleClick'+str(self.id)+'(){$.ajax({url:"formCustomerHandle", data:{url:"'+self.url+'",action:"handleUrl"},type:"GET",dataType:"json",success:function(returned, status, xhr){console.log(status);}});}</script>')
+                return mark_safe('<a href = "http://'+self.url+'" target="_blank" onclick="handleClick'+str(self.id)+'();">'+show_url+'</a><script type="text/javascript">function handleClick'+str(self.id)+'(){$.ajax({url:"formCustomerHandle", data:{url:"'+self.url+'",action:"handleUrl"},type:"GET",dataType:"json",success:function(returned, status, xhr){console.log(status);}});}</script>')
     change_url.short_description = "点击域名"
 
 class SEOCustomer(models.Model):
