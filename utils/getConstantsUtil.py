@@ -16,3 +16,11 @@ def getConstantsVale(key):
     else:
         return None
 
+#获取参数值, 如果为空，返回默认值
+def getConstantsValeOrDefault(key, defaultValue):
+    c_v = Constants.objects.filter(key=key)
+    if c_v.exists():
+        v = c_v[0].value
+        return v
+    else:
+        return defaultValue

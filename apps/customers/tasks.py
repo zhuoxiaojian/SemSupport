@@ -15,6 +15,7 @@ from works.models import customerUser
 import time
 import datetime
 from utils.getConstantsUtil import getConstantsVale
+from utils.handleUtils import Utils
 # SalecountNum = 250
 # SEOInfoNum = 250
 
@@ -210,8 +211,9 @@ def work_three(filterCity, saleUser, date_from, date_to, date_from_two, date_to_
         for s_user in saleUser:
             if s_user.city.name == '远程':
                 s_user_id.append(s_user.id)
+    need_city = Utils.getDutyArea(filterCity)
     #进行复杂的Q对象查询
-    q_query = FormCustomer.objects.filter(~Q(city__in=filterCity), Q(discover_time__range=(date_from_two, date_to_two)),
+    q_query = FormCustomer.objects.filter(Q(city__in=need_city), Q(discover_time__range=(date_from_two, date_to_two)),
                                           Q(create_time__range=(date_from, date_to)) | Q(create_time__isnull=True),
                                           sem_status=0, aike_status=0).order_by('randid')
     # print(q_query.query)
@@ -225,7 +227,7 @@ def work_three(filterCity, saleUser, date_from, date_to, date_from_two, date_to_
                 new_reslut = result - 1
                 if new_reslut <= 0:
                     result = 1
-                q_randid = FormCustomer.objects.filter(~Q(city__in=filterCity),
+                q_randid = FormCustomer.objects.filter(Q(city__in=need_city),
                                                        Q(discover_time__range=(date_from_two, date_to_two)),
                                                        Q(create_time__range=(date_from, date_to)) |
                                                        Q(create_time__isnull=True),

@@ -7,7 +7,8 @@
 from django.contrib.auth.models import Group
 from customers.models import FormCustomer, SEOCustomer
 from django.db.models import Q
-from utils.DateFormatUtil import get_before_oneweek, get_today, true_month_handle, get_yesterday, get_before_oneweek_yes, get_more_day_before
+from utils.DateFormatUtil import get_before_oneweek, get_today, true_month_handle,\
+    get_yesterday, get_before_oneweek_yes, get_more_day_before
 from works.models import customerUser
 from citys.models import FormRegionCity
 from users.models import UserProfile
@@ -16,6 +17,7 @@ import os
 from django.db.models import Count, Min, Max, Sum
 import datetime
 from works.models import BackUpWork
+from utils.handleUtils import Utils
 # seo_info_num = 250
 # sem_info_num = 250
 #获取所有销售人员
@@ -495,12 +497,13 @@ def get_real_data_three(user_id, city_name):
         user_work = customerUser.objects.filter(user_id=user_id, create_time=now_time)
         randid_list = []
         city_list = getFilterCityList()
+        need_city = Utils.getDutyArea(city_list)
         yesterdayRandIdList_two = getYesterdayRandIdList(user_id)
         if user_work.exists():
             q_randid = user_work[0].customer_id
             q_randid_list_data = FormCustomer.objects.filter(Q(randid__gte=q_randid),
                                                              ~Q(randid__in=yesterdayRandIdList_two),
-                                                             ~Q(city__in=city_list),
+                                                             Q(city__in=need_city),
                                                              Q(discover_time__range=(date_from_two, date_to_two)),
                                                              Q(create_time__range=(date_from, date_to)) |
                                                              Q(create_time__isnull=True),
