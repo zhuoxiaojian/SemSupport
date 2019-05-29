@@ -36,7 +36,7 @@ class BackUpWorkRepeatAdmin(object):
     list_filter = ('user_id', 'create_time', 'user_name', )
     search_fields = ('create_time', )
     model_icon = 'fa fa-sticky-note'
-
+    list_per_page = 10
 
     def queryset(self):
         qs = super(BackUpWorkRepeatAdmin, self).queryset()
