@@ -86,7 +86,7 @@ def work_one(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, 
         if frcDataByCityCount > SalecountNum:
             frcDataByCityCount = frcDataByCityCount - SalecountNum
         if len(s_user_id) > 0:
-            for i in s_user_id:
+            for i in range(0, len(s_user_id)):
                 result = SalecountNum * (i + count) % frcDataByCityCount
                 new_reslut = result - 1
                 if new_reslut <= 0:
@@ -101,7 +101,7 @@ def work_one(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, 
                 if q_randid.exists():
                     q_randid_id = q_randid[0].randid
                     create_time_now = str(get_today())
-                    user_id_now = i
+                    user_id_now = s_user_id[i]
                     query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
                     #print(query_cc.query)
                     if query_cc.exists():
@@ -176,7 +176,7 @@ def work_two(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, 
         if frcDataByCityCount > SalecountNum:
             frcDataByCityCount = frcDataByCityCount - SalecountNum
         if len(s_user_id) > 0:
-            for i in s_user_id:
+            for i in range(0, len(s_user_id)):
                 result = SalecountNum * (i + count) % frcDataByCityCount
                 new_reslut = result - 1
                 if new_reslut <= 0:
@@ -192,7 +192,7 @@ def work_two(frcData, saleUser, date_from, date_to, date_from_two, date_to_two, 
                 if q_randid.exists():
                     q_randid_id = q_randid[0].randid
                     create_time_now = str(get_today())
-                    user_id_now = i
+                    user_id_now = s_user_id[i]
                     query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
                     #print(query_cc.query)
                     if query_cc.exists():
@@ -222,7 +222,7 @@ def work_three(filterCity, saleUser, date_from, date_to, date_from_two, date_to_
         if frcDataByCityCount > SalecountNum:
             frcDataByCityCount = frcDataByCityCount - SalecountNum
         if len(s_user_id) > 0:
-            for i in s_user_id:
+            for i in range(0, len(s_user_id)):
                 result = SalecountNum * (i + count) % frcDataByCityCount
                 new_reslut = result - 1
                 if new_reslut <= 0:
@@ -237,7 +237,7 @@ def work_three(filterCity, saleUser, date_from, date_to, date_from_two, date_to_
                 if q_randid.exists():
                     q_randid_id = q_randid[0].randid
                     create_time_now = str(get_today())
-                    user_id_now = i
+                    user_id_now = s_user_id[i]
                     query_cc = customerUser.objects.filter(user_id=user_id_now, create_time=create_time_now)
                     #print(query_cc.query)
                     if query_cc.exists():
