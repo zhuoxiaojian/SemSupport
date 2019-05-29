@@ -54,24 +54,31 @@ class BackUpWorkRepeat(BackUpWork):
     def __str__(self):
         return str(self.user_id)
 
-
     def repeat_count(self):
-        from utils.DateFormatUtil import get_yesterday, get_today
+        from django.db.models import Q
+        from utils.DateFormatUtil import get_today
         from customers.models import FormCustomer
-        yesB = BackUpWork.objects.filter(create_time=str(get_yesterday()), user_id=self.user_id)
+        toA = BackUpWork.objects.filter(~Q(user_id=self.user_id), create_time=str(get_today()))
         toB = BackUpWork.objects.filter(create_time=str(get_today()), user_id=self.user_id)
-        if yesB.exists() and toB.exists():
-            y = yesB[0]
-            t = toB[0]
-            yy = FormCustomer.objects.raw(y.sql_str)
-            tt = FormCustomer.objects.raw(t.sql_str)
-            list_company = []
+        string = ''
+        if toA and toB:
+            B = toB[0]
+            yy = FormCustomer.objects.raw(B.sql_str)
+            B_company = []
             for y in yy:
-                list_company.append(y.company_name)
-            for t in tt:
-                list_company.append(t.company_name)
-            set_company = set(list_company)
-            repeat_count = len(list_company) - len(set_company)
-            return repeat_count
-        return 0
-    repeat_count.short_description = '重复总数'
+                B_company.append(y.company_name)
+            for A in toA:
+                A_company = []
+                tt = FormCustomer.objects.raw(A.sql_str)
+                for t in tt:
+                    A_company.append(t.company_name)
+                compare_company = B_company + A_company
+                set_company = set(compare_company)
+                count = len(compare_company) - len(set_company)
+                if count > 0:
+                    string = string + '与用户' + str(A.user_name) + '重复' + str(count) + '条数据；'
+        if string:
+            return string
+        else:
+            return '【账号间无重复】'
+    repeat_count.short_description = '重复描述'
