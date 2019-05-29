@@ -12,6 +12,7 @@ class customerUserAdmin(object):
     list_filter = ('user_id', 'create_time', )
     search_fields = ('create_time', )
     model_icon = 'fa fa-sticky-note'
+    list_per_page = 20
 
 xadmin.site.register(customerUser, customerUserAdmin)
 
@@ -20,7 +21,7 @@ class BackUpWorkAdmin(object):
     list_filter = ('user_id', 'create_time', 'user_name', )
     search_fields = ('create_time', )
     model_icon = 'fa fa-sticky-note'
-
+    list_per_page = 10
 
     def queryset(self):
         qs = super(BackUpWorkAdmin, self).queryset()
