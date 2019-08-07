@@ -6,8 +6,11 @@
 # @Software: PyCharm
 import xadmin
 from customers.models import FormCustomer, SEOCustomer
-from utils.getNeedDatas import get_real_data, get_real_data_two, getHandleCityList, getFilterCityList, get_real_data_three
-from utils.getNeedDatas import get_sale_manager_id, get_saleManager_data, get_new_customer_data_to_admin, get_seo_sale_work, get_seo_sale_id, get_sale_id
+from utils.getNeedDatas import get_real_data, get_real_data_two, getHandleCityList, \
+    getFilterCityList, get_real_data_three
+from utils.getNeedDatas import get_sale_manager_id, get_saleManager_data, \
+    get_new_customer_data_to_admin, get_seo_sale_work, get_seo_sale_id, get_sale_id, \
+    get_normal_sale_id, get_sale_time, get_normal_sale_time
 import os
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
@@ -18,17 +21,21 @@ from xadmin.layout import Main, Fieldset, Row, Side
 from django.utils.translation import ugettext as _
 from works.tasks import back_up_work
 
-#公司信息
-class FormCustomerAdmin(object):
 
-    list_display = ('company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'source', 'remark', 'create_time', 'update_time', 'discover_time', 'discover_count', 'change_button')
+# 公司信息
+class FormCustomerAdmin(object):
+    list_display = (
+    'company_name', 'change_url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'source', 'remark', 'create_time',
+    'update_time', 'discover_time', 'discover_count', 'change_button')
     list_filter = ('company_name', 'create_time', 'city', 'source')
-    search_fields = ('company_name', )
+    search_fields = ('company_name',)
     list_per_page = 20
-    readonly_fields = ['company_name', 'url', 'company_type', 'city', 'create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'discover_time', 'discover_count', 'source', ]
-    exclude = ['randid', 'useless_counter', 'level'] #不显示列
-    show_bookmarks = False #屏蔽书签
-    list_export = ()#设置不显示导出按钮
+    readonly_fields = ['company_name', 'url', 'company_type', 'city', 'create_time', 'sem_status', 'aike_status',
+                       'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'discover_time',
+                       'discover_count', 'source', ]
+    exclude = ['randid', 'useless_counter', 'level']  # 不显示列
+    show_bookmarks = False  # 屏蔽书签
+    list_export = ()  # 设置不显示导出按钮
     model_icon = 'fa fa-cog'
 
     # 修改布局
@@ -63,8 +70,6 @@ class FormCustomerAdmin(object):
             )
         return super(FormCustomerAdmin, self).get_form_layout()
 
-
-
     def queryset(self):
         user_id = self.user.id
         user_name = self.user.username
@@ -76,31 +81,54 @@ class FormCustomerAdmin(object):
             if user_id in sm_id:
                 dict_work = get_saleManager_data()
                 if dict_work:
-                    dict_key = str(user_id)+user_name
+                    dict_key = str(user_id) + user_name
                     manage_randid_list = dict_work[dict_key]
                     return qs.filter(randid__in=manage_randid_list)
             else:
                 sale_id_list = get_sale_id()
+                normal_sale_id_list = get_normal_sale_id()
                 if user_id in sale_id_list:
                     # print(getHandleCityList())
+                    handle_time = get_sale_time()
                     if self.user.city.name in getHandleCityList():
-                        randid_list = get_real_data_two(self.user.id, self.user.city.name)
+                        randid_list = get_real_data_two(self.user.id, self.user.city.name, handle_time)
                         result_work = qs.filter(randid__in=randid_list)
                         if result_work.exists():
                             back_up_work.delay(user_id, user_name, str(result_work.query))
                         return result_work
                     elif self.user.city.name == '远程':
-                        randid_list = get_real_data_three(self.user.id, self.user.city.name)
+                        randid_list = get_real_data_three(self.user.id, self.user.city.name, handle_time)
                         result_work = qs.filter(randid__in=randid_list)
                         if result_work.exists():
                             back_up_work.delay(user_id, user_name, str(result_work.query))
                         return result_work
                     else:
-                        randid_list = get_real_data(self.user.id, self.user.city.name)
+                        randid_list = get_real_data(self.user.id, self.user.city.name, handle_time)
                         result_work = qs.filter(randid__in=randid_list)
                         if result_work.exists():
                             back_up_work.delay(user_id, user_name, str(result_work.query))
                         return result_work
+                elif user_id in normal_sale_id_list:
+                    handle_time = get_normal_sale_time()
+                    if self.user.city.name in getHandleCityList():
+                        randid_list = get_real_data_two(self.user.id, self.user.city.name, handle_time)
+                        result_work = qs.filter(randid__in=randid_list)
+                        if result_work.exists():
+                            back_up_work.delay(user_id, user_name, str(result_work.query))
+                        return result_work
+                    elif self.user.city.name == '远程':
+                        randid_list = get_real_data_three(self.user.id, self.user.city.name, handle_time)
+                        result_work = qs.filter(randid__in=randid_list)
+                        if result_work.exists():
+                            back_up_work.delay(user_id, user_name, str(result_work.query))
+                        return result_work
+                    else:
+                        randid_list = get_real_data(self.user.id, self.user.city.name, handle_time)
+                        result_work = qs.filter(randid__in=randid_list)
+                        if result_work.exists():
+                            back_up_work.delay(user_id, user_name, str(result_work.query))
+                        return result_work
+
                 else:
                     return qs
 
@@ -108,20 +136,24 @@ class FormCustomerAdmin(object):
     #     obj = self.new_obj
     #     print(obj.id)
 
+
 xadmin.site.register(FormCustomer, FormCustomerAdmin)
 
 
-#seo公司信息
+# seo公司信息
 class SEOCustomerAdmin(object):
-    list_display = ('company_name', 'company_type', 'link_man', 'tel_phone', 'mobile_phone', 'address', 'aike_status', 'seo_status', 'prefecture_level_city', 'create_date', )
-    list_filter = ('company_name', 'create_date', 'prefecture_level_city', )
-    search_fields = ('company_name', )
+    list_display = (
+    'company_name', 'company_type', 'link_man', 'tel_phone', 'mobile_phone', 'address', 'aike_status', 'seo_status',
+    'prefecture_level_city', 'create_date',)
+    list_filter = ('company_name', 'create_date', 'prefecture_level_city',)
+    search_fields = ('company_name',)
     list_per_page = 20
     readonly_fields = ['rand_id', 'channel', 'level']
     # exclude = ['randid', ] #不显示列
-    show_bookmarks = False #屏蔽书签
+    show_bookmarks = False  # 屏蔽书签
     model_icon = 'fa fa-folder-o'
     import_excel = True
+
     # 修改布局
     def get_form_layout(self):
         if self.org_obj:
@@ -177,18 +209,17 @@ class SEOCustomerAdmin(object):
 xadmin.site.register(SEOCustomer, SEOCustomerAdmin)
 
 
-
-
-#业支导入资料
+# 业支导入资料
 class FormCustomerImportAdmin(object):
-    list_display = ('company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'source', 'remark', 'create_time', )
+    list_display = (
+    'company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'source', 'remark', 'create_time',)
     list_filter = ('company_name', 'create_time', 'city', 'source')
-    search_fields = ('company_name', )
+    search_fields = ('company_name',)
     list_per_page = 20
     readonly_fields = ['create_time', 'sem_status', 'discover_time', 'discover_count', 'source', ]
-    exclude = ['randid', 'useless_counter', 'level', ] #不显示列
-    show_bookmarks = False #屏蔽书签
-    list_export = ()#设置不显示导出按钮
+    exclude = ['randid', 'useless_counter', 'level', ]  # 不显示列
+    show_bookmarks = False  # 屏蔽书签
+    list_export = ()  # 设置不显示导出按钮
     import_excel = True
     model_icon = 'fa fa-download'
 
@@ -224,8 +255,6 @@ class FormCustomerImportAdmin(object):
             )
         return super(FormCustomerImportAdmin, self).get_form_layout()
 
-
-
     def post(self, request, *args, **kwargs):
         if 'excel' in request.FILES:
             excelFile = request.FILES.get('excel')
@@ -234,22 +263,29 @@ class FormCustomerImportAdmin(object):
             tmp_file = os.path.join(MEDIA_ROOT, path)
             read_excel.delay(tmp_file, excel_name)
         return super(FormCustomerImportAdmin, self).post(request, args, kwargs)
+
+
 xadmin.site.register(FormCustomerImport, FormCustomerImportAdmin)
 
-#最新资料，销售经理可用
+
+# 最新资料，销售经理可用
 class NewFormCustomerAdmin(object):
-    list_display = ('company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'source', 'remark', 'create_time', 'discover_time', 'discover_count', )
-    list_filter = ('company_name', 'create_time', 'city', 'source', )
-    search_fields = ('company_name', )
+    list_display = (
+    'company_name', 'url', 'company_type', 'phone', 'qq', 'wechat', 'city', 'source', 'remark', 'create_time',
+    'discover_time', 'discover_count',)
+    list_filter = ('company_name', 'create_time', 'city', 'source',)
+    search_fields = ('company_name',)
     list_per_page = 20
     readonly_fields = ['create_time', 'discover_time', 'discover_count', 'source', ]
-    exclude = ['randid', 'useless_counter', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'level']
-    show_bookmarks = False #屏蔽书签
-    list_export = ('xls', )
+    exclude = ['randid', 'useless_counter', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword',
+               'update_time', 'amount', 'level']
+    show_bookmarks = False  # 屏蔽书签
+    list_export = ('xls',)
     model_icon = 'fa fa-level-up'
 
     def has_change_permission(request, obj=None):
         return False
+
     def has_delete_permission(request, obj=None):
         return False
 
@@ -264,7 +300,7 @@ class NewFormCustomerAdmin(object):
             if user_id in sm_id:
                 dict_work = get_saleManager_data()
                 if dict_work:
-                    dict_key = str(user_id)+user_name
+                    dict_key = str(user_id) + user_name
                     manage_randid_list = dict_work[dict_key]
                     return qs.filter(randid__in=manage_randid_list)
             else:
@@ -278,16 +314,20 @@ class NewFormCustomerAdmin(object):
 
 xadmin.site.register(NewFormCustomer, NewFormCustomerAdmin)
 
-#成功案例
+
+# 成功案例
 class SuccessCustomerAdmin(object):
-    list_display = ('company_name', 'url', 'company_type', 'city', 'create_time', 'update_time', 'discover_time', 'discover_count', 'source', )
-    list_filter = ('company_name', 'create_time', 'city', 'source', )
-    search_fields = ('company_name', )
+    list_display = (
+    'company_name', 'url', 'company_type', 'city', 'create_time', 'update_time', 'discover_time', 'discover_count',
+    'source',)
+    list_filter = ('company_name', 'create_time', 'city', 'source',)
+    search_fields = ('company_name',)
     list_per_page = 20
-    readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword', 'update_time', 'amount', 'discover_time', 'discover_count', 'source', ]
-    exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', 'remark', 'address', 'level', ] #不显示列
-    show_bookmarks = False #屏蔽书签
-    list_export = ()#设置不显示导出按钮
+    readonly_fields = ['create_time', 'sem_status', 'aike_status', 'depart', 'sales', 'business', 'keyword',
+                       'update_time', 'amount', 'discover_time', 'discover_count', 'source', ]
+    exclude = ['randid', 'useless_counter', 'phone', 'qq', 'wechat', 'remark', 'address', 'level', ]  # 不显示列
+    show_bookmarks = False  # 屏蔽书签
+    list_export = ()  # 设置不显示导出按钮
     model_icon = 'fa fa-handshake-o'
 
     # 修改布局
@@ -322,24 +362,29 @@ class SuccessCustomerAdmin(object):
     def queryset(self):
         qs = super(SuccessCustomerAdmin, self).queryset()
         return qs.filter(sem_status=1)
+
+
 xadmin.site.register(SuccessCustomer, SuccessCustomerAdmin)
 
 
 class SeoSaleWorkAdmin(object):
-    list_display = ('company_name', 'link_man', 'tel_phone', 'mobile_phone', 'aike_status', 'seo_status', 'prefecture_level_city', 'create_date', 'seo_flag', 'chang_flag')
-    list_filter = ('company_name', 'create_date', 'prefecture_level_city', )
-    search_fields = ('company_name', )
+    list_display = (
+    'company_name', 'link_man', 'tel_phone', 'mobile_phone', 'aike_status', 'seo_status', 'prefecture_level_city',
+    'create_date', 'seo_flag', 'chang_flag')
+    list_filter = ('company_name', 'create_date', 'prefecture_level_city',)
+    search_fields = ('company_name',)
     readonly_fields = ['company_name', 'company_type', 'url', 'legal_man', 'issue_date', 'registration_authority',
                        'link_man', 'sex', 'job', 'is_boss', 'isboss_mobile', 'mobile_phone_address',
                        'mobile_carrieroperator', 'zip_code', 'scope_business', 'business_position', 'produce_address',
-                       'province', 'prefecture_level_city', 'county_district', 'address',  'register_year',
+                       'province', 'prefecture_level_city', 'county_district', 'address', 'register_year',
                        'register_month', 'register_date', 'finance_principal', 'finance_principal_mobile', 'seo_status',
                        'aike_status', 'create_date', 'update_date', ]
     list_per_page = 20
-    exclude = ['rand_id', 'channel', 'level', ] #不显示列
-    show_bookmarks = False #屏蔽书签
-    list_export = ()#设置不显示导出按钮
+    exclude = ['rand_id', 'channel', 'level', ]  # 不显示列
+    show_bookmarks = False  # 屏蔽书签
+    list_export = ()  # 设置不显示导出按钮
     model_icon = 'fa fa-star-half-o'
+
     # 修改布局
     def get_form_layout(self):
         if self.org_obj:
@@ -390,4 +435,6 @@ class SeoSaleWorkAdmin(object):
             return qs.filter(rand_id__in=rand_id_list)
         else:
             return qs
+
+
 xadmin.site.register(SeoSaleWork, SeoSaleWorkAdmin)

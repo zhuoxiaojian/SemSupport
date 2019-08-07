@@ -10,11 +10,11 @@ project_name = os.path.split(os.path.abspath('.'))[-1]
 project_settings = '{0}.settings'.format(project_name)
 
 # 设置环境变量
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', project_settings)
-
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', project_settings)
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SemSupport.settings')
 # 实例化Celery
-app = Celery(project_name)
-
+# app = Celery(project_name)
+app = Celery("SemSupport")
 # 使用django的settings文件配置celery
 #app.config_from_object('django.conf:settings')
 #将定时任务celery的config文件引入
