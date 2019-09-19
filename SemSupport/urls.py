@@ -21,6 +21,7 @@ import xadmin
 # 导入x admin，替换admin
 from django.views.static import serve
 from speechcraft.views import speechcraftshow, getSpeechcraftInfo, checkLoginInfo
+from works.views import OneKeyInitWork
 from SemSupport.settings import MEDIA_ROOT
 
 
@@ -42,6 +43,7 @@ urlpatterns = [
     url('^admin/customers/seosalework/seoCustomerHandle', seoCustomerHandle.as_view(), name='seoCustomerHandle'),
     #富文本编辑器
     url(r'^ueditor/', include('DjangoUeditor.urls')),
+    url(r'^admin/works/customeruser/onekeyinitwork', OneKeyInitWork.as_view(), name='onekeyinitwork')
 ]
 
 # 全局 404 500 页面配置（django 会自动调用这个变量）

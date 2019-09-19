@@ -1,0 +1,50 @@
+{% load i18n %}
+<button class="btn btn-small" style="margin-left: 5px;" onclick="startInitWork();">
+    <i class="fa fa-search"></i>一键分配任务
+</button>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myWorksModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog" style="width: 900px; height: 500px; ">
+        <div class="modal-content">
+           {% comment %} <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">任务分配</h4>
+            </div>{% endcomment %}
+            <div class="modal-body">
+                <center><img src="/static/images/loading.gif"></center>
+                <br>
+                <center><span id="myTimeCount"></span></center>
+                <br>
+                <center>正在重新分配任务，请稍等片刻！！！！</center>
+            </div>
+            {% comment %}<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+            </div>{% endcomment %}
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script>
+    var t = 0;
+   function startInitWork() {
+       $('#myWorksModal').modal('show');
+       setInterval("clock()",1000);
+       $.ajax({
+           url: 'onekeyinitwork',
+           type: 'GET',
+           success: function (result) {
+               console.log(result.msg);
+               $('#myWorksModal').modal('hide');
+               t = 0;
+               window.location.reload();
+           }
+       });
+   }
+
+   function clock()
+   {
+       $("#myTimeCount").html(" 共耗时 " + (t+1) + " 秒 ");
+       t = t + 1;
+   }
+</script>
