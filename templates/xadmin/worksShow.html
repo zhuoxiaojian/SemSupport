@@ -2,6 +2,9 @@
 <button class="btn btn-small" style="margin-left: 5px;" onclick="startInitWork();">
     <i class="fa fa-search"></i>一键分配任务
 </button>
+<button class="btn btn-small" style="margin-left: 5px;" onclick="startClearBackWork();">
+    <i class="fa fa-opera"></i>一键清空备份任务
+</button>
 <!-- 模态框（Modal） -->
 <div class="modal fade" id="myWorksModal" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
@@ -16,7 +19,7 @@
                 <br>
                 <center><span id="myTimeCount"></span></center>
                 <br>
-                <center>正在重新分配任务，请稍等片刻！！！！</center>
+                <center><span id="showContentSpan"></span></center>
             </div>
             {% comment %}<div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -28,8 +31,10 @@
 <script>
     var t = 0;
    function startInitWork() {
+       t = 0;
        $('#myWorksModal').modal('show');
        setInterval("clock()",1000);
+       $("#showContentSpan").html("正在重新分配任务，请稍等片刻！！！！");
        $.ajax({
            url: 'onekeyinitwork',
            type: 'GET',
@@ -46,5 +51,21 @@
    {
        $("#myTimeCount").html(" 共耗时 " + (t+1) + " 秒 ");
        t = t + 1;
+   }
+
+   function startClearBackWork(){
+       t = 0;
+       $('#myWorksModal').modal('show');
+       setInterval("clock()",1000);
+       $("#showContentSpan").html("正在清空当天备份任务，请稍等片刻！！！！");
+       $.ajax({
+           url: 'onekeyclearbackwork',
+           type: 'GET',
+           success: function (result) {
+               console.log(result.msg);
+               $('#myWorksModal').modal('hide');
+               t = 0;
+           }
+       });
    }
 </script>
