@@ -33,7 +33,7 @@
    function startInitWork() {
        t = 0;
        $('#myWorksModal').modal('show');
-       setInterval("clock()",1000);
+       var timer = setInterval("clock()",1000);
        $("#showContentSpan").html("正在重新分配任务，请稍等片刻！！！！");
        $.ajax({
            url: 'onekeyinitwork',
@@ -42,6 +42,7 @@
                console.log(result.msg);
                $('#myWorksModal').modal('hide');
                t = 0;
+               clearInterval(timer);
                window.location.reload();
            }
        });
@@ -56,7 +57,7 @@
    function startClearBackWork(){
        t = 0;
        $('#myWorksModal').modal('show');
-       setInterval("clock()",1000);
+       var mytimer = setInterval("clock()",1000);
        $("#showContentSpan").html("正在清空当天备份任务，请稍等片刻！！！！");
        $.ajax({
            url: 'onekeyclearbackwork',
@@ -65,6 +66,7 @@
                console.log(result.msg);
                $('#myWorksModal').modal('hide');
                t = 0;
+               clearInterval(mytimer);
            }
        });
    }
