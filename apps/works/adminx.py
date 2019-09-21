@@ -4,7 +4,7 @@
 # @Email   : 1933860854@qq.com
 # @File    : adminx.py
 # @Software: PyCharm
-from works.models import customerUser, BackUpWork, BackUpWorkRepeat
+from works.models import customerUser, BackUpWork, BackUpWorkRepeat, CountDateCompany
 from utils.DateFormatUtil import get_today
 import works.worksPlugin
 import xadmin
@@ -43,6 +43,22 @@ class BackUpWorkRepeatAdmin(object):
         return qs.filter(create_time=str(get_today()))
 
 
+class CountDateCompanyAdmin(object):
+    list_display = ('riqi', 'city', 'count')
+    list_filter = ('riqi', 'city', 'count')
+    search_fields = ('city', )
+    model_icon = 'fa fa-sticky-note'
+    list_per_page = 20
+
+    def has_change_permission(request, obj=None):
+        return False
+    def has_delete_permission(request, obj=None):
+        return False
+    def has_add_permission(request, obj=None):
+        return False
+
+
 xadmin.site.register(customerUser, customerUserAdmin)
 xadmin.site.register(BackUpWork, BackUpWorkAdmin)
 xadmin.site.register(BackUpWorkRepeat, BackUpWorkRepeatAdmin)
+xadmin.site.register(CountDateCompany, CountDateCompanyAdmin)

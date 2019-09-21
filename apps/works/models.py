@@ -82,3 +82,20 @@ class BackUpWorkRepeat(BackUpWork):
         else:
             return '【账号间无重复】'
     repeat_count.short_description = '重复描述'
+
+
+class CountDateCompany(models.Model):
+    # 使用视图 count_date_company
+    # select `t`.`id` AS `id`,date_format(`t`.`create_time`,'%Y-%m-%d') AS `riqi`,`t`.`city` AS `city`,count(0) AS `count` from `form_customer` `t` where ((`t`.`create_time` is not null) and (`t`.`city` is not null)) group by date_format(`t`.`create_time`,'%Y-%m-%d'),`t`.`city` order by `t`.`create_time` desc
+    riqi = models.CharField(max_length=255, verbose_name='日期')
+    city = models.CharField(max_length=255, verbose_name='城市')
+    count = models.IntegerField(verbose_name='总数')
+
+    class Meta:
+        db_table = 'count_date_company'
+        verbose_name = '爬虫统计'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.riqi
+
