@@ -135,6 +135,8 @@ class FormCustomerAdmin(object):
     # def save_models(self):
     #     obj = self.new_obj
     #     print(obj.id)
+    def has_add_permission(request, obj=None):
+        return False
 
 
 xadmin.site.register(FormCustomer, FormCustomerAdmin)
